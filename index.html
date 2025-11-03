@@ -6,6 +6,10 @@
     <title>Gerador de QR Code</title>
     
     <style>
+        /* Adiciona scroll suave na raiz da página */
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #dcf2e2; 
@@ -81,8 +85,8 @@
         }
         
         input#input-geo-url {
-            background-color: #f1f5f9; /* slate-100 */
-            color: #64748b; /* slate-500 */
+            background-color: #f1f5f9; 
+            color: #64748b; 
             font-size: 0.9em;
         }
         
@@ -112,7 +116,7 @@
         }
 
         .btn-geo-auto {
-            background-color: #6c757d; /* Cinza */
+            background-color: #6c757d;
             font-size: 14px;
             padding: 8px;
             margin-top: -5px; 
@@ -122,13 +126,12 @@
             background-color: #5a6268;
         }
 
-        /* --- CSS: Cores dentro do Box --- */
         .color-inputs {
             display: flex;
             justify-content: space-around;
             gap: 15px;
             padding: 10px 0;
-            margin-top: auto; /* Empurra para baixo */
+            margin-top: auto; 
             padding-top: 15px;
             border-top: 1px solid #ddd;
         }
@@ -152,7 +155,6 @@
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
         input[type="color"]::-moz-color-swatch { border: none; border-radius: 6px; }
-        /* --- FIM DO CSS --- */
 
 
         .resultado {
@@ -360,6 +362,7 @@
     <script>
         // --- Seletores Básicos ---
         const qrContainer = document.getElementById('qrcode');
+        const resultadoSection = document.querySelector('.resultado'); // <-- MUDANÇA AQUI
         let qrcode = null;
 
         // --- Seletores dos Geradores (Bloco 1) ---
@@ -399,8 +402,6 @@
         const inputGeoUrl = document.getElementById('input-geo-url'); 
         const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto'); 
 
-        // --- SELETORES DE COR GLOBAIS REMOVIDOS ---
-
         // --- Seletores (Resultado) ---
         const btnLimpar = document.getElementById('btn-limpar');
         const btnDownload = document.getElementById('btn-download');
@@ -408,15 +409,12 @@
 
 
         /**
-         * Função principal de Geração (AGORA RECEBE O EVENTO)
+         * Função principal de Geração (AGORA COM SCROLL)
          */
         function gerarQRCode(texto, event) {
-            limparQRCode(false); // Não reseta as cores
+            limparQRCode(false); 
             
-            // Acha o '.box' pai do botão que foi clicado
             const box = event.target.closest('.box');
-            
-            // Pega as cores DE DENTRO daquele box
             const corPrincipal = box.querySelector('.color-dark-input').value;
             const corFundo = box.querySelector('.color-light-input').value;
 
@@ -432,10 +430,13 @@
             btnLimpar.classList.remove('hidden');
             btnDownload.classList.remove('hidden');
             btnPrint.classList.remove('hidden');
+
+            // --- MUDANÇA AQUI: Rola a tela para o resultado ---
+            resultadoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         /**
-         * Função de Limpeza (AGORA RESETA TODAS AS CORES)
+         * Função de Limpeza
          */
         function limparQRCode(resetColors = true) {
             if (qrcode) {
@@ -448,7 +449,6 @@
             btnPrint.classList.add('hidden');
 
             if (resetColors) {
-                // Reseta TODOS os seletores de cor da página
                 const allDark = document.querySelectorAll('.color-dark-input');
                 const allLight = document.querySelectorAll('.color-light-input');
                 allDark.forEach(input => input.value = "#000000");
@@ -487,7 +487,7 @@
             }
         });
         
-        // --- FUNÇÕES DE GEOLOCALIZAÇÃO (sem mudança) ---
+        // --- FUNÇÕES DE GEOLOCALIZAÇÃO ---
         function checkSecureContext() {
             if (window.location.protocol !== 'https:') {
                 alert('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).');
@@ -546,17 +546,17 @@
 
 
         /**
-         * Event Listeners dos Geradores (AGORA PASSAM O 'event')
+         * Event Listeners dos Geradores
          */
 
         // URL
-        btnUrl.addEventListener('click', (event) => { // Passa o event
+        btnUrl.addEventListener('click', (event) => { 
             const url = inputUrl.value;
             if (url) { gerarQRCode(url, event); } else { alert("Por favor, digite uma URL."); }
         });
 
         // Wi-Fi
-        btnWifi.addEventListener('click', (event) => { // Passa o event
+        btnWifi.addEventListener('click', (event) => { 
             const ssid = inputWifiSsid.value;
             const pass = inputWifiPass.value;
             if (ssid) {
@@ -566,7 +566,7 @@
         });
         
         // vCard
-        btnVCard.addEventListener('click', (event) => { // Passa o event
+        btnVCard.addEventListener('click', (event) => { 
             const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
             const empresa = inputVCardEmpresa.value;
@@ -597,7 +597,7 @@
         });
 
         // WhatsApp
-        btnWhatsapp.addEventListener('click', (event) => { // Passa o event
+        btnWhatsapp.addEventListener('click', (event) => { 
             let tel = inputWhatsappTel.value;
             let msg = inputWhatsappMsg.value;
 
@@ -613,7 +613,7 @@
         });
         
         // Geolocalização
-        btnGeo.addEventListener('click', (event) => { // Passa o event
+        btnGeo.addEventListener('click', (event) => { 
             const url = inputGeoUrl.value;
             
             if (!url || url === "Obtendo..." || url === "Falha ao obter localização.") {
@@ -623,7 +623,7 @@
             gerarQRCode(url, event);
         });
         
-        // Botoões GEO (não geram QR Code, não precisam do 'event')
+        // Botoões GEO
         btnVCardGeoAuto.addEventListener('click', () => {
             obterGeolocalizacaoLatLng('input-vcard-lat', 'input-vcard-long');
         });
@@ -633,7 +633,7 @@
 
 
         /**
-         * Funções do PIX (PASSAM O 'event')
+         * Funções do PIX
          */
         function formatarEMV(id, value) {
             const length = ('00' + value.length).slice(-2);
@@ -652,7 +652,7 @@
             }
             return ('0000' + (crc & 0xFFFF).toString(16).toUpperCase()).slice(-4);
         }
-        btnPix.addEventListener('click', (event) => { // Passa o event
+        btnPix.addEventListener('click', (event) => { 
             const key = inputPixKey.value;
             let name = inputPixName.value;
             let city = inputPixCity.value;
