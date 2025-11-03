@@ -6,7 +6,6 @@
     <title>Gerador de QR Code</title>
     
     <style>
-        /* Adiciona scroll suave na raiz da página */
         html {
             scroll-behavior: smooth;
         }
@@ -362,7 +361,7 @@
     <script>
         // --- Seletores Básicos ---
         const qrContainer = document.getElementById('qrcode');
-        const resultadoSection = document.querySelector('.resultado'); // <-- MUDANÇA AQUI
+        const resultadoSection = document.querySelector('.resultado'); 
         let qrcode = null;
 
         // --- Seletores dos Geradores (Bloco 1) ---
@@ -409,7 +408,7 @@
 
 
         /**
-         * Função principal de Geração (AGORA COM SCROLL)
+         * Função principal de Geração (com Scroll)
          */
         function gerarQRCode(texto, event) {
             limparQRCode(false); 
@@ -431,7 +430,6 @@
             btnDownload.classList.remove('hidden');
             btnPrint.classList.remove('hidden');
 
-            // --- MUDANÇA AQUI: Rola a tela para o resultado ---
             resultadoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
@@ -525,6 +523,8 @@
                 handleGeoError
             );
         }
+        
+        // --- MUDANÇA AQUI: Link do Google Maps ---
         function obterGeolocalizacaoURL(idInputURL) {
             if (!checkSecureContext()) return;
             const input = document.getElementById(idInputURL);
@@ -533,6 +533,7 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
+                    // Link padrão do Google Maps
                     const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
                     input.value = mapsLink;
                 },
@@ -565,7 +566,7 @@
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
-        // vCard
+        // vCard (COM MUDANÇA)
         btnVCard.addEventListener('click', (event) => { 
             const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
@@ -587,9 +588,15 @@
                 `TEL;TYPE=WORK,VOICE:${tel}`, `EMAIL:${email}`, `URL:${site}`
             ];
             
+            // --- MUDANÇA AQUI ---
             if (lat && long) {
-                vCardString.push(`GEO:${lat};${long}`);
+                // Adiciona o GEO: para apps de contato
+                vCardString.push(`GEO:${lat},${long}`);
+                // Adiciona o link do Google Maps nas Notas
+                const mapsLink = `https://www.google.com/maps?q=${lat},${long}`;
+                vCardString.push(`NOTE:Ver no mapa: ${mapsLink}`);
             }
+            // --- FIM DA MUDANÇA ---
             
             vCardString.push('END:VCARD');
             
