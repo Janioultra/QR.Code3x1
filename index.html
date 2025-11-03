@@ -80,7 +80,6 @@
             box-sizing: border-box;
         }
         
-        /* Campo de link do mapa (só leitura) */
         input#input-geo-url {
             background-color: #f1f5f9; /* slate-100 */
             color: #64748b; /* slate-500 */
@@ -123,40 +122,38 @@
             background-color: #5a6268;
         }
 
-        .config-cores {
-            background-color: rgba(255, 255, 255, 0.5);
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 20px;
+        /* --- CSS: Cores dentro do Box --- */
+        .color-inputs {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap; 
+            justify-content: space-around;
+            gap: 15px;
+            padding: 10px 0;
+            margin-top: auto; /* Empurra para baixo */
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
         }
-        .config-cores h2 {
-            width: 100%;
-            text-align: center;
-            margin: 0 0 10px 0;
-            border: none;
-        }
-        .config-cores > div {
+        .color-inputs > div {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        input[type="color"] {
-            width: 50px;
-            height: 50px;
+        .color-inputs label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .color-inputs input[type="color"] {
+            width: 40px;
+            height: 40px;
             padding: 0;
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
         }
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
-        input[type="color"]::-moz-color-swatch { border: none; border-radius: 8px; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
+        input[type="color"]::-moz-color-swatch { border: none; border-radius: 6px; }
+        /* --- FIM DO CSS --- */
+
 
         .resultado {
             margin-top: 24px;
@@ -207,7 +204,7 @@
             .container, footer { display: none; }
             .container > *:not(.resultado) { display: none; }
             .resultado { display: block; }
-            .resultado h2, .botoes-resultado, .config-cores { display: none; }
+            .resultado h2, .botoes-resultado, .color-inputs { display: none; }
             #qrcode { border: none; box-shadow: none; margin: 0; padding: 0; }
         }
 
@@ -230,6 +227,16 @@
             <div class="box">
                 <h2>Site / URL</h2>
                 <input type="text" id="input-url" placeholder="https://seusite.com.br">
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
                 <button id="btn-url">Gerar QR Code</button>
             </div>
             
@@ -237,6 +244,16 @@
                 <h2>Conexão Wi-Fi</h2>
                 <input type="text" id="input-wifi-ssid" placeholder="Nome da rede (SSID)">
                 <input type="password" id="input-wifi-pass" placeholder="Senha da rede">
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
                 <button id="btn-wifi">Gerar QR Code</button>
             </div>
             
@@ -247,6 +264,16 @@
                 <input type="text" id="input-pix-city" placeholder="Sua Cidade (até 15 chars)">
                 <input type="text" id="input-pix-amount" placeholder="Valor (Ex: 10,50) (opcional)">
                 <input type="text" id="input-pix-txid" placeholder="ID da Transação (opcional)">
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
                 <button id="btn-pix">Gerar QR Code PIX</button>
             </div>
 
@@ -261,6 +288,16 @@
                 <input type="text" id="input-vcard-lat" placeholder="Latitude (opcional)">
                 <input type="text" id="input-vcard-long" placeholder="Longitude (opcional)">
                 <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização</button>
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
                 <button id="btn-vcard">Gerar vCard</button>
             </div>
             
@@ -268,6 +305,16 @@
                 <h2>WhatsApp</h2>
                 <input type="tel" id="input-whatsapp-tel" placeholder="Nº (ex: 5575998312170)">
                 <textarea id="input-whatsapp-msg" placeholder="Mensagem padrão (opcional)"></textarea>
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
                 <button id="btn-whatsapp">Gerar Link Zap</button>
             </div>
             
@@ -276,24 +323,21 @@
                 <p class="text-sm text-slate-600 mb-2">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
                 <input type="text" id="input-geo-url" placeholder="Link do Google Maps aparecerá aqui..." readonly class="w-full p-2 border border-slate-300 rounded-md">
                 <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Obter Localização (Google Maps)</button>
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
                 <button id="btn-geo">Gerar Mapa</button>
             </div>
 
         </div> 
         
-        <div class="config-cores">
-            <h2>Cores (Opcional)</h2>
-            <div>
-                <label for="color-dark">Cor do QR Code:</label>
-                <input type="color" id="color-dark" value="#000000">
-            </div>
-            <div>
-                <label for="color-light">Cor do Fundo:</label>
-                <input type="color" id="color-light" value="#ffffff">
-            </div>
-        </div>
-
-
         <div class="resultado">
             <h2>Seu QR Code:</h2>
             <div id="qrcode"></div>
@@ -307,7 +351,7 @@
     </div> 
     
     <footer>
-        <p>Todos os direitos reservados &copy; 2025 Jânio Carlos P</p>
+        <p>Todos os direitos reservados © 2025 Jânio Carlos P</p>
         <p>WhatsApp: 55 75 99831-2170</p>
     </footer>
 
@@ -327,7 +371,6 @@
         
         // --- Seletores dos Geradores (Bloco 2) ---
         const btnPix = document.getElementById('btn-pix');
-        // (inputs do pix)
         const inputPixKey = document.getElementById('input-pix-key');
         const inputPixName = document.getElementById('input-pix-name');
         const inputPixCity = document.getElementById('input-pix-city');
@@ -336,7 +379,6 @@
         
         // --- Seletores do vCard ---
         const btnVCard = document.getElementById('btn-vcard');
-        // (inputs do vcard)
         const inputVCardNome = document.getElementById('input-vcard-nome');
         const inputVCardCargo = document.getElementById('input-vcard-cargo');
         const inputVCardEmpresa = document.getElementById('input-vcard-empresa');
@@ -345,33 +387,38 @@
         const inputVCardSite = document.getElementById('input-vcard-site');
         const inputVCardLat = document.getElementById('input-vcard-lat');
         const inputVCardLong = document.getElementById('input-vcard-long');
-        const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto'); // Botão Geo do vCard
+        const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto'); 
         
         // --- Seletores (WhatsApp) ---
         const btnWhatsapp = document.getElementById('btn-whatsapp');
         const inputWhatsappTel = document.getElementById('input-whatsapp-tel');
         const inputWhatsappMsg = document.getElementById('input-whatsapp-msg');
 
-        // --- Seletores (Geo Mapas - MUDANÇA AQUI) ---
+        // --- Seletores (Geo Mapas) ---
         const btnGeo = document.getElementById('btn-geo');
-        const inputGeoUrl = document.getElementById('input-geo-url'); // NOVO INPUT
-        const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto'); // Botão Geo do Mapa
+        const inputGeoUrl = document.getElementById('input-geo-url'); 
+        const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto'); 
 
-        // --- Seletores (Cores e Resultado) ---
-        const colorDark = document.getElementById('color-dark');
-        const colorLight = document.getElementById('color-light');
+        // --- SELETORES DE COR GLOBAIS REMOVIDOS ---
+
+        // --- Seletores (Resultado) ---
         const btnLimpar = document.getElementById('btn-limpar');
         const btnDownload = document.getElementById('btn-download');
         const btnPrint = document.getElementById('btn-print');
 
 
         /**
-         * Função principal de Geração
+         * Função principal de Geração (AGORA RECEBE O EVENTO)
          */
-        function gerarQRCode(texto) {
-            limparQRCode(false); 
-            const corPrincipal = colorDark.value;
-            const corFundo = colorLight.value;
+        function gerarQRCode(texto, event) {
+            limparQRCode(false); // Não reseta as cores
+            
+            // Acha o '.box' pai do botão que foi clicado
+            const box = event.target.closest('.box');
+            
+            // Pega as cores DE DENTRO daquele box
+            const corPrincipal = box.querySelector('.color-dark-input').value;
+            const corFundo = box.querySelector('.color-light-input').value;
 
             qrcode = new QRCode(qrContainer, {
                 text: texto,
@@ -388,7 +435,7 @@
         }
 
         /**
-         * Função de Limpeza
+         * Função de Limpeza (AGORA RESETA TODAS AS CORES)
          */
         function limparQRCode(resetColors = true) {
             if (qrcode) {
@@ -401,8 +448,11 @@
             btnPrint.classList.add('hidden');
 
             if (resetColors) {
-                colorDark.value = "#000000";
-                colorLight.value = "#ffffff";
+                // Reseta TODOS os seletores de cor da página
+                const allDark = document.querySelectorAll('.color-dark-input');
+                const allLight = document.querySelectorAll('.color-light-input');
+                allDark.forEach(input => input.value = "#000000");
+                allLight.forEach(input => input.value = "#ffffff");
             }
         }
         
@@ -437,11 +487,7 @@
             }
         });
         
-        // --- FUNÇÕES DE GEOLOCALIZAÇÃO ---
-        
-        /**
-         * Verifica se o site é seguro (HTTPS)
-         */
+        // --- FUNÇÕES DE GEOLOCALIZAÇÃO (sem mudança) ---
         function checkSecureContext() {
             if (window.location.protocol !== 'https:') {
                 alert('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).');
@@ -453,10 +499,6 @@
             }
             return true;
         }
-
-        /**
-         * Função genérica para tratar erros de geolocalização
-         */
         function handleGeoError(error) {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
@@ -473,13 +515,8 @@
                     break;
             }
         }
-
-        /**
-         * Função para obter Lat/Long (para o vCard)
-         */
         function obterGeolocalizacaoLatLng(idLat, idLong) {
             if (!checkSecureContext()) return;
-            
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     document.getElementById(idLat).value = position.coords.latitude.toFixed(6);
@@ -488,16 +525,10 @@
                 handleGeoError
             );
         }
-        
-        /**
-         * Função para obter URL do Google Maps (para o Mapa)
-         */
         function obterGeolocalizacaoURL(idInputURL) {
             if (!checkSecureContext()) return;
-            
             const input = document.getElementById(idInputURL);
             input.value = "Obtendo...";
-            
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const lat = position.coords.latitude;
@@ -515,27 +546,27 @@
 
 
         /**
-         * Event Listeners dos Geradores
+         * Event Listeners dos Geradores (AGORA PASSAM O 'event')
          */
 
         // URL
-        btnUrl.addEventListener('click', () => {
+        btnUrl.addEventListener('click', (event) => { // Passa o event
             const url = inputUrl.value;
-            if (url) { gerarQRCode(url); } else { alert("Por favor, digite uma URL."); }
+            if (url) { gerarQRCode(url, event); } else { alert("Por favor, digite uma URL."); }
         });
 
         // Wi-Fi
-        btnWifi.addEventListener('click', () => {
+        btnWifi.addEventListener('click', (event) => { // Passa o event
             const ssid = inputWifiSsid.value;
             const pass = inputWifiPass.value;
             if (ssid) {
                 const wifiString = `WIFI:T:WPA;S:${ssid};P:${pass};;`;
-                gerarQRCode(wifiString);
+                gerarQRCode(wifiString, event);
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
         // vCard
-        btnVCard.addEventListener('click', () => {
+        btnVCard.addEventListener('click', (event) => { // Passa o event
             const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
             const empresa = inputVCardEmpresa.value;
@@ -562,11 +593,11 @@
             
             vCardString.push('END:VCARD');
             
-            gerarQRCode(vCardString.join('\n'));
+            gerarQRCode(vCardString.join('\n'), event);
         });
 
         // WhatsApp
-        btnWhatsapp.addEventListener('click', () => {
+        btnWhatsapp.addEventListener('click', (event) => { // Passa o event
             let tel = inputWhatsappTel.value;
             let msg = inputWhatsappMsg.value;
 
@@ -578,33 +609,31 @@
             const encodedMsg = encodeURIComponent(msg);
             
             const whatsappString = `https://wa.me/${tel}?text=${encodedMsg}`;
-            gerarQRCode(whatsappString);
+            gerarQRCode(whatsappString, event);
         });
         
-        // Geolocalização (Mapas) - MUDANÇA AQUI
-        btnGeo.addEventListener('click', () => {
+        // Geolocalização
+        btnGeo.addEventListener('click', (event) => { // Passa o event
             const url = inputGeoUrl.value;
             
             if (!url || url === "Obtendo..." || url === "Falha ao obter localização.") {
                 alert('Por favor, obtenha um link de localização válido primeiro.');
                 return;
             }
-            // Simplesmente gera o QR Code da URL que está no campo
-            gerarQRCode(url);
+            gerarQRCode(url, event);
         });
         
-        // --- NOVOS EVENT LISTENERS ---
+        // Botoões GEO (não geram QR Code, não precisam do 'event')
         btnVCardGeoAuto.addEventListener('click', () => {
             obterGeolocalizacaoLatLng('input-vcard-lat', 'input-vcard-long');
         });
-
         btnMapasGeoAuto.addEventListener('click', () => {
             obterGeolocalizacaoURL('input-geo-url');
         });
 
 
         /**
-         * Funções do PIX (sem mudança)
+         * Funções do PIX (PASSAM O 'event')
          */
         function formatarEMV(id, value) {
             const length = ('00' + value.length).slice(-2);
@@ -623,7 +652,7 @@
             }
             return ('0000' + (crc & 0xFFFF).toString(16).toUpperCase()).slice(-4);
         }
-        btnPix.addEventListener('click', () => {
+        btnPix.addEventListener('click', (event) => { // Passa o event
             const key = inputPixKey.value;
             let name = inputPixName.value;
             let city = inputPixCity.value;
@@ -662,7 +691,7 @@
             const checksum = crc16(stringPIX);
             const brCodeCompleto = stringPIX + checksum;
             
-            gerarQRCode(brCodeCompleto);
+            gerarQRCode(brCodeCompleto, event);
         });
 
     </script>
