@@ -11,7 +11,6 @@
             background-color: #dcf2e2; 
             color: #333;
             display: flex;
-            /* Alteração aqui para centralizar o container principal */
             flex-direction: column; 
             justify-content: center;
             align-items: center;
@@ -22,7 +21,7 @@
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px; 
             background-color: transparent; 
             box-shadow: none; 
             border-radius: 8px;
@@ -43,13 +42,18 @@
 
         .geradores {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr; 
             gap: 20px;
         }
 
         @media (min-width: 768px) {
             .geradores {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr 1fr; 
+            }
+        }
+        @media (min-width: 1024px) {
+            .geradores {
+                grid-template-columns: 1fr 1fr 1fr; 
             }
         }
 
@@ -58,11 +62,16 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 16px;
+            /* Garante que os boxes tenham a mesma altura */
+            display: flex;
+            flex-direction: column;
         }
 
         input[type="text"],
         input[type="password"],
         input[type="number"],
+        input[type="tel"], 
+        input[type="email"], 
         textarea {
             width: 100%;
             padding: 10px;
@@ -70,6 +79,11 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
         }
 
         button {
@@ -83,10 +97,64 @@
             font-size: 16px;
             font-weight: 600;
         }
+        
+        /* Botão principal fica no final do box */
+        .box > button:last-of-type {
+            margin-top: auto;
+        }
 
         button:hover {
             background-color: #28a745; 
         }
+
+        /* --- NOVO CSS PARA O BOTÃO GEO --- */
+        .btn-geo-auto {
+            background-color: #6c757d; /* Cinza */
+            font-size: 14px;
+            padding: 8px;
+            margin-top: -5px; /* Puxa para perto dos inputs */
+            margin-bottom: 12px;
+        }
+        .btn-geo-auto:hover {
+            background-color: #5a6268;
+        }
+        /* --- FIM DO NOVO CSS --- */
+
+
+        .config-cores {
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap; 
+        }
+        .config-cores h2 {
+            width: 100%;
+            text-align: center;
+            margin: 0 0 10px 0;
+            border: none;
+        }
+        .config-cores > div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="color"] {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
+        input[type="color"]::-moz-color-swatch { border: none; border-radius: 8px; }
 
         .resultado {
             margin-top: 24px;
@@ -103,6 +171,7 @@
             align-items: center;
             padding: 10px;
             background-color: #fafafa;
+            color: transparent; 
         }
 
         #qrcode img,
@@ -119,75 +188,34 @@
             margin: 0 auto;
             margin-top: 16px;
         }
-
-        .botoes-resultado button {
-            width: auto;
-            flex-grow: 1; 
-        }
-
-        #btn-download {
-            background-color: #28a745;
-        }
-        #btn-download:hover {
-            background-color: #218838;
-        }
-        
-        #btn-print {
-            background-color: #6c757d;
-        }
-        #btn-print:hover {
-            background-color: #5a6268;
-        }
-
-        #btn-limpar {
-            background-color: #dc3545;
-        }
-        #btn-limpar:hover {
-            background-color: #c82333;
-        }
+        .botoes-resultado button { width: auto; flex-grow: 1; }
+        #btn-download { background-color: #28a745; }
+        #btn-download:hover { background-color: #218838; }
+        #btn-print { background-color: #6c757d; }
+        #btn-print:hover { background-color: #5a6268; }
+        #btn-limpar { background-color: #dc3545; }
+        #btn-limpar:hover { background-color: #c82333; }
 
         .hidden {
             display: none;
         }
 
         @media print {
-            body {
-                background-color: #fff;
-                padding: 0;
-            }
-            .container, footer {
-                display: none;
-            }
-            /* Garante que o resultado seja a única coisa visível */
-            .container > *:not(.resultado) {
-                display: none;
-            }
-            .resultado {
-                display: block;
-            }
-            .resultado h2,
-            .botoes-resultado {
-                display: none;
-            }
-            #qrcode {
-                border: none;
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
-            }
+            body { background-color: #fff; padding: 0; }
+            .container, footer { display: none; }
+            .container > *:not(.resultado) { display: none; }
+            .resultado { display: block; }
+            .resultado h2, .botoes-resultado, .config-cores { display: none; }
+            #qrcode { border: none; box-shadow: none; margin: 0; padding: 0; }
         }
 
-        /* --- NOVO CSS DO RODAPÉ --- */
         footer {
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
-            color: #333; /* Cor escura para ler bem no fundo verde */
+            color: #333; 
         }
-
-        footer p {
-            margin: 5px 0; /* Espaçamento entre as linhas */
-        }
+        footer p { margin: 5px 0; }
 
     </style>
 </head>
@@ -202,28 +230,71 @@
                 <input type="text" id="input-url" placeholder="https://seusite.com.br">
                 <button id="btn-url">Gerar QR Code</button>
             </div>
+            
             <div class="box">
                 <h2>Conexão Wi-Fi</h2>
                 <input type="text" id="input-wifi-ssid" placeholder="Nome da rede (SSID)">
                 <input type="password" id="input-wifi-pass" placeholder="Senha da rede">
                 <button id="btn-wifi">Gerar QR Code</button>
             </div>
+            
             <div class="box">
                 <h2>PIX (Gerador BR Code)</h2>
                 <input type="text" id="input-pix-key" placeholder="Sua Chave PIX (CPF, e-mail, etc)">
                 <input type="text" id="input-pix-name" placeholder="Seu Nome (até 25 chars)">
                 <input type="text" id="input-pix-city" placeholder="Sua Cidade (até 15 chars)">
                 <input type="text" id="input-pix-amount" placeholder="Valor (Ex: 10,50) (opcional)">
-                <input type="text" id="input-pix-txid" placeholder="ID da Transação (opcional, ex: 'fatura123')">
+                <input type="text" id="input-pix-txid" placeholder="ID da Transação (opcional)">
                 <button id="btn-pix">Gerar QR Code PIX</button>
+            </div>
+
+            <div class="box">
+                <h2>Cartão de Visita (vCard)</h2>
+                <input type="text" id="input-vcard-nome" placeholder="Nome Completo">
+                <input type="text" id="input-vcard-cargo" placeholder="Cargo (Ex: Desenvolvedor)">
+                <input type="text" id="input-vcard-empresa" placeholder="Empresa">
+                <input type="tel" id="input-vcard-tel" placeholder="Telefone (ex: +55 75 9...)">
+                <input type="email" id="input-vcard-email" placeholder="E-mail">
+                <input type="text" id="input-vcard-site" placeholder="Site (ex: https://...)">
+                <input type="text" id="input-vcard-lat" placeholder="Latitude (opcional)">
+                <input type="text" id="input-vcard-long" placeholder="Longitude (opcional)">
+                <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização</button>
+                <button id="btn-vcard">Gerar vCard</button>
+            </div>
+            
+            <div class="box">
+                <h2>WhatsApp</h2>
+                <input type="tel" id="input-whatsapp-tel" placeholder="Nº (ex: 5575998312170)">
+                <textarea id="input-whatsapp-msg" placeholder="Mensagem padrão (opcional)"></textarea>
+                <button id="btn-whatsapp">Gerar Link Zap</button>
+            </div>
+            
+            <div class="box">
+                <h2>Localização (Mapas)</h2>
+                <input type="text" id="input-geo-lat" placeholder="Latitude (ex: -12.6094)">
+                <input type="text" id="input-geo-long" placeholder="Longitude (ex: -39.1009)">
+                <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Usar minha localização</button>
+                <button id="btn-geo">Gerar Mapa</button>
+            </div>
+
+        </div> 
+        
+        <div class="config-cores">
+            <h2>Cores (Opcional)</h2>
+            <div>
+                <label for="color-dark">Cor do QR Code:</label>
+                <input type="color" id="color-dark" value="#000000">
+            </div>
+            <div>
+                <label for="color-light">Cor do Fundo:</label>
+                <input type="color" id="color-light" value="#ffffff">
             </div>
         </div>
 
+
         <div class="resultado">
             <h2>Seu QR Code:</h2>
-            <div id="qrcode">
-                <p>O QR Code aparecerá aqui...</p>
-            </div>
+            <div id="qrcode"></div>
             
             <div class="botoes-resultado">
                 <button id="btn-download" class="hidden">Download (PNG)</button>
@@ -231,7 +302,9 @@
                 <button id="btn-limpar" class="hidden">Limpar</button>
             </div>
         </div>
-    </div> <footer>
+    </div> 
+    
+    <footer>
         <p>Todos os direitos reservados &copy; 2025 Jânio Carlos P</p>
         <p>WhatsApp: 55 75 99831-2170</p>
     </footer>
@@ -239,77 +312,188 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <script>
-        // O JAVASCRIPT CONTINUA EXATAMENTE O MESMO
+        // --- Seletores Básicos ---
         const qrContainer = document.getElementById('qrcode');
         let qrcode = null;
 
+        // --- Seletores dos Geradores (Bloco 1) ---
         const btnUrl = document.getElementById('btn-url');
         const inputUrl = document.getElementById('input-url');
         const btnWifi = document.getElementById('btn-wifi');
         const inputWifiSsid = document.getElementById('input-wifi-ssid');
         const inputWifiPass = document.getElementById('input-wifi-pass');
+        
+        // --- Seletores dos Geradores (Bloco 2) ---
         const btnPix = document.getElementById('btn-pix');
         const inputPixKey = document.getElementById('input-pix-key');
         const inputPixName = document.getElementById('input-pix-name');
         const inputPixCity = document.getElementById('input-pix-city');
         const inputPixAmount = document.getElementById('input-pix-amount');
         const inputPixTxid = document.getElementById('input-pix-txid');
+        
+        // --- Seletores do vCard ---
+        const btnVCard = document.getElementById('btn-vcard');
+        const inputVCardNome = document.getElementById('input-vcard-nome');
+        const inputVCardCargo = document.getElementById('input-vcard-cargo');
+        const inputVCardEmpresa = document.getElementById('input-vcard-empresa');
+        const inputVCardTel = document.getElementById('input-vcard-tel');
+        const inputVCardEmail = document.getElementById('input-vcard-email');
+        const inputVCardSite = document.getElementById('input-vcard-site');
+        const inputVCardLat = document.getElementById('input-vcard-lat');
+        const inputVCardLong = document.getElementById('input-vcard-long');
+        
+        // --- Seletores (WhatsApp e Geo) ---
+        const btnWhatsapp = document.getElementById('btn-whatsapp');
+        const inputWhatsappTel = document.getElementById('input-whatsapp-tel');
+        const inputWhatsappMsg = document.getElementById('input-whatsapp-msg');
+        const btnGeo = document.getElementById('btn-geo');
+        const inputGeoLat = document.getElementById('input-geo-lat');
+        const inputGeoLong = document.getElementById('input-geo-long');
 
+        // --- NOVOS Seletores (Botões Auto-Geo) ---
+        const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto');
+        const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto');
+
+        // --- Seletores (Cores e Resultado) ---
+        const colorDark = document.getElementById('color-dark');
+        const colorLight = document.getElementById('color-light');
         const btnLimpar = document.getElementById('btn-limpar');
         const btnDownload = document.getElementById('btn-download');
         const btnPrint = document.getElementById('btn-print');
 
 
+        /**
+         * Função principal de Geração
+         */
         function gerarQRCode(texto) {
-            limparQRCode();
+            limparQRCode(false); 
+            const corPrincipal = colorDark.value;
+            const corFundo = colorLight.value;
+
             qrcode = new QRCode(qrContainer, {
                 text: texto,
                 width: 256,
                 height: 256,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
+                colorDark: corPrincipal, 
+                colorLight: corFundo,   
+                correctLevel: QRCode.CorrectLevel.H 
             });
+            
             btnLimpar.classList.remove('hidden');
             btnDownload.classList.remove('hidden');
             btnPrint.classList.remove('hidden');
         }
 
-        function limparQRCode() {
+        /**
+         * Função de Limpeza
+         */
+        function limparQRCode(resetColors = true) {
             if (qrcode) {
                 qrcode.clear();
             }
-            qrContainer.innerHTML = '<p>O QR Code aparecerá aqui...</p>';
+            qrContainer.innerHTML = ''; 
+            
             btnLimpar.classList.add('hidden');
             btnDownload.classList.add('hidden');
             btnPrint.classList.add('hidden');
+
+            if (resetColors) {
+                colorDark.value = "#000000";
+                colorLight.value = "#ffffff";
+            }
         }
         
-        btnLimpar.addEventListener('click', limparQRCode);
+        btnLimpar.addEventListener('click', () => limparQRCode(true)); 
 
+        /**
+         * Botões de Ação (Download/Print)
+         */
         btnPrint.addEventListener('click', () => {
             window.print();
         });
 
         btnDownload.addEventListener('click', () => {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
+            if (!canvas) {
+                alert('Erro: Canvas do QR Code não encontrado.');
+                return;
+            }
+            const imgURL = canvas.toDataURL('image/png');
+
+            if (isIOS) {
+                const newTab = window.open();
+                newTab.document.write(`<img src="${imgURL}" alt="QR Code" style="width:100%;">`);
+            } else {
                 const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
+                link.href = imgURL;
                 link.download = 'qrcode.png';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            } else {
-                alert('Erro: Não foi possível encontrar a imagem do QR Code para baixar.');
             }
         });
+        
+        // --- NOVA FUNÇÃO DE GEOLOCALIZAÇÃO ---
+        /**
+         * Função para obter a geolocalização do usuário
+         */
+        function obterGeolocalizacao(idLat, idLong) {
+            // 1. Verifica se está em HTTPS (obrigatório)
+            if (window.location.protocol !== 'https:') {
+                alert('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).');
+                return;
+            }
 
+            // 2. Verifica se o navegador suporta
+            if (!navigator.geolocation) {
+                alert('Geolocalização não é suportada pelo seu navegador.');
+                return;
+            }
+
+            // 3. Pede a localização
+            navigator.geolocation.getCurrentPosition(
+                // Sucesso
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+
+                    document.getElementById(idLat).value = lat.toFixed(6); // 6 casas decimais
+                    document.getElementById(idLong).value = long.toFixed(6);
+                },
+                // Erro
+                (error) => {
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert('Você negou o pedido de geolocalização.');
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert('Informação de localização indisponível.');
+                            break;
+                        case error.TIMEOUT:
+                            alert('Pedido de localização expirou.');
+                            break;
+                        default:
+                            alert('Um erro desconhecido ocorreu ao buscar localização.');
+                            break;
+                    }
+                }
+            );
+        }
+        // --- FIM DA NOVA FUNÇÃO ---
+
+
+        /**
+         * Event Listeners dos Geradores
+         */
+
+        // URL
         btnUrl.addEventListener('click', () => {
             const url = inputUrl.value;
             if (url) { gerarQRCode(url); } else { alert("Por favor, digite uma URL."); }
         });
 
+        // Wi-Fi
         btnWifi.addEventListener('click', () => {
             const ssid = inputWifiSsid.value;
             const pass = inputWifiPass.value;
@@ -319,18 +503,86 @@
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
+        // vCard
+        btnVCard.addEventListener('click', () => {
+            const nome = inputVCardNome.value;
+            const cargo = inputVCardCargo.value;
+            const empresa = inputVCardEmpresa.value;
+            const tel = inputVCardTel.value;
+            const email = inputVCardEmail.value;
+            const site = inputVCardSite.value;
+            const lat = inputVCardLat.value.replace(',', '.'); 
+            const long = inputVCardLong.value.replace(',', '.'); 
+
+            if (!nome || (!tel && !email)) {
+                alert('Nome e pelo menos um Telefone ou E-mail são obrigatórios!');
+                return;
+            }
+            
+            let vCardString = [
+                'BEGIN:VCARD', 'VERSION:3.0',
+                `N:${nome}`, `FN:${nome}`, `ORG:${empresa}`, `TITLE:${cargo}`,
+                `TEL;TYPE=WORK,VOICE:${tel}`, `EMAIL:${email}`, `URL:${site}`
+            ];
+            
+            if (lat && long) {
+                vCardString.push(`GEO:${lat};${long}`);
+            }
+            
+            vCardString.push('END:VCARD');
+            
+            gerarQRCode(vCardString.join('\n'));
+        });
+
+        // WhatsApp
+        btnWhatsapp.addEventListener('click', () => {
+            let tel = inputWhatsappTel.value;
+            let msg = inputWhatsappMsg.value;
+
+            if (!tel) {
+                alert('O número de telefone é obrigatório!');
+                return;
+            }
+            tel = tel.replace(/\D/g, '');
+            const encodedMsg = encodeURIComponent(msg);
+            
+            const whatsappString = `https://wa.me/${tel}?text=${encodedMsg}`;
+            gerarQRCode(whatsappString);
+        });
+        
+        // Geolocalização
+        btnGeo.addEventListener('click', () => {
+            const lat = inputGeoLat.value.replace(',', '.');
+            const long = inputGeoLong.value.replace(',', '.');
+            
+            if (!lat || !long) {
+                alert('Latitude e Longitude são obrigatórias!');
+                return;
+            }
+            const geoString = `geo:${lat},${long}`;
+            gerarQRCode(geoString);
+        });
+        
+        // --- NOVOS EVENT LISTENERS ---
+        btnVCardGeoAuto.addEventListener('click', () => {
+            obterGeolocalizacao('input-vcard-lat', 'input-vcard-long');
+        });
+
+        btnMapasGeoAuto.addEventListener('click', () => {
+            obterGeolocalizacao('input-geo-lat', 'input-geo-long');
+        });
+
+
+        /**
+         * Funções do PIX (sem mudança)
+         */
         function formatarEMV(id, value) {
             const length = ('00' + value.length).slice(-2);
             return `${id}${length}${value}`;
         }
-
         function simplificarTexto(text) {
-            return text
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^\w\s]/g, '');
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/g, '');
         }
-
         function crc16(data) {
             let crc = 0xFFFF;
             for (let i = 0; i < data.length; i++) {
@@ -341,7 +593,6 @@
             }
             return ('0000' + (crc & 0xFFFF).toString(16).toUpperCase()).slice(-4);
         }
-
         btnPix.addEventListener('click', () => {
             const key = inputPixKey.value;
             let name = inputPixName.value;
@@ -353,31 +604,26 @@
                 alert("Chave PIX, Nome e Cidade são obrigatórios!");
                 return;
             }
-
             const merchantAccountInfo = [
                 formatarEMV('00', 'br.gov.bcb.pix'),
                 formatarEMV('01', key)
             ].join('');
-
             let brCode = [
                 formatarEMV('00', '01'),
                 formatarEMV('26', merchantAccountInfo),
                 formatarEMV('52', '0000'),
                 formatarEMV('53', '986')
             ];
-
             if (amount) {
                 const amountComPonto = amount.replace(",", "."); 
                 const valorFormatado = parseFloat(amountComPonto).toFixed(2);
                 brCode.push(formatarEMV('54', valorFormatado));
             }
-
             brCode.push(formatarEMV('58', 'BR'));
             name = simplificarTexto(name).substring(0, 25);
             brCode.push(formatarEMV('59', name));
             city = simplificarTexto(city).substring(0, 15);
             brCode.push(formatarEMV('60', city));
-
             txid = txid ? txid.replace(/\s/g, '') : '***';
             const additionalData = formatarEMV('05', txid);
             brCode.push(formatarEMV('62', additionalData));
@@ -385,8 +631,7 @@
             let stringPIX = brCode.join('');
             const checksum = crc16(stringPIX);
             const brCodeCompleto = stringPIX + checksum;
-
-            console.log("BR Code Gerado:", brCodeCompleto);
+            
             gerarQRCode(brCodeCompleto);
         });
 
