@@ -62,7 +62,6 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 16px;
-            /* Garante que os boxes tenham a mesma altura */
             display: flex;
             flex-direction: column;
         }
@@ -79,6 +78,13 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+        }
+        
+        /* Campo de link do mapa (só leitura) */
+        input#input-geo-url {
+            background-color: #f1f5f9; /* slate-100 */
+            color: #64748b; /* slate-500 */
+            font-size: 0.9em;
         }
         
         textarea {
@@ -98,7 +104,6 @@
             font-weight: 600;
         }
         
-        /* Botão principal fica no final do box */
         .box > button:last-of-type {
             margin-top: auto;
         }
@@ -107,19 +112,16 @@
             background-color: #28a745; 
         }
 
-        /* --- NOVO CSS PARA O BOTÃO GEO --- */
         .btn-geo-auto {
             background-color: #6c757d; /* Cinza */
             font-size: 14px;
             padding: 8px;
-            margin-top: -5px; /* Puxa para perto dos inputs */
+            margin-top: -5px; 
             margin-bottom: 12px;
         }
         .btn-geo-auto:hover {
             background-color: #5a6268;
         }
-        /* --- FIM DO NOVO CSS --- */
-
 
         .config-cores {
             background-color: rgba(255, 255, 255, 0.5);
@@ -270,10 +272,10 @@
             </div>
             
             <div class="box">
-                <h2>Localização (Mapas)</h2>
-                <input type="text" id="input-geo-lat" placeholder="Latitude (ex: -12.6094)">
-                <input type="text" id="input-geo-long" placeholder="Longitude (ex: -39.1009)">
-                <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Usar minha localização</button>
+                <h2>Localização (Google Maps)</h2>
+                <p class="text-sm text-slate-600 mb-2">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
+                <input type="text" id="input-geo-url" placeholder="Link do Google Maps aparecerá aqui..." readonly class="w-full p-2 border border-slate-300 rounded-md">
+                <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Obter Localização (Google Maps)</button>
                 <button id="btn-geo">Gerar Mapa</button>
             </div>
 
@@ -325,6 +327,7 @@
         
         // --- Seletores dos Geradores (Bloco 2) ---
         const btnPix = document.getElementById('btn-pix');
+        // (inputs do pix)
         const inputPixKey = document.getElementById('input-pix-key');
         const inputPixName = document.getElementById('input-pix-name');
         const inputPixCity = document.getElementById('input-pix-city');
@@ -333,6 +336,7 @@
         
         // --- Seletores do vCard ---
         const btnVCard = document.getElementById('btn-vcard');
+        // (inputs do vcard)
         const inputVCardNome = document.getElementById('input-vcard-nome');
         const inputVCardCargo = document.getElementById('input-vcard-cargo');
         const inputVCardEmpresa = document.getElementById('input-vcard-empresa');
@@ -341,18 +345,17 @@
         const inputVCardSite = document.getElementById('input-vcard-site');
         const inputVCardLat = document.getElementById('input-vcard-lat');
         const inputVCardLong = document.getElementById('input-vcard-long');
+        const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto'); // Botão Geo do vCard
         
-        // --- Seletores (WhatsApp e Geo) ---
+        // --- Seletores (WhatsApp) ---
         const btnWhatsapp = document.getElementById('btn-whatsapp');
         const inputWhatsappTel = document.getElementById('input-whatsapp-tel');
         const inputWhatsappMsg = document.getElementById('input-whatsapp-msg');
-        const btnGeo = document.getElementById('btn-geo');
-        const inputGeoLat = document.getElementById('input-geo-lat');
-        const inputGeoLong = document.getElementById('input-geo-long');
 
-        // --- NOVOS Seletores (Botões Auto-Geo) ---
-        const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto');
-        const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto');
+        // --- Seletores (Geo Mapas - MUDANÇA AQUI) ---
+        const btnGeo = document.getElementById('btn-geo');
+        const inputGeoUrl = document.getElementById('input-geo-url'); // NOVO INPUT
+        const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto'); // Botão Geo do Mapa
 
         // --- Seletores (Cores e Resultado) ---
         const colorDark = document.getElementById('color-dark');
@@ -434,53 +437,81 @@
             }
         });
         
-        // --- NOVA FUNÇÃO DE GEOLOCALIZAÇÃO ---
+        // --- FUNÇÕES DE GEOLOCALIZAÇÃO ---
+        
         /**
-         * Função para obter a geolocalização do usuário
+         * Verifica se o site é seguro (HTTPS)
          */
-        function obterGeolocalizacao(idLat, idLong) {
-            // 1. Verifica se está em HTTPS (obrigatório)
+        function checkSecureContext() {
             if (window.location.protocol !== 'https:') {
                 alert('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).');
-                return;
+                return false;
             }
-
-            // 2. Verifica se o navegador suporta
             if (!navigator.geolocation) {
                 alert('Geolocalização não é suportada pelo seu navegador.');
-                return;
+                return false;
             }
+            return true;
+        }
 
-            // 3. Pede a localização
+        /**
+         * Função genérica para tratar erros de geolocalização
+         */
+        function handleGeoError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert('Você negou o pedido de geolocalização.');
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert('Informação de localização indisponível.');
+                    break;
+                case error.TIMEOUT:
+                    alert('Pedido de localização expirou.');
+                    break;
+                default:
+                    alert('Um erro desconhecido ocorreu ao buscar localização.');
+                    break;
+            }
+        }
+
+        /**
+         * Função para obter Lat/Long (para o vCard)
+         */
+        function obterGeolocalizacaoLatLng(idLat, idLong) {
+            if (!checkSecureContext()) return;
+            
             navigator.geolocation.getCurrentPosition(
-                // Sucesso
+                (position) => {
+                    document.getElementById(idLat).value = position.coords.latitude.toFixed(6);
+                    document.getElementById(idLong).value = position.coords.longitude.toFixed(6);
+                },
+                handleGeoError
+            );
+        }
+        
+        /**
+         * Função para obter URL do Google Maps (para o Mapa)
+         */
+        function obterGeolocalizacaoURL(idInputURL) {
+            if (!checkSecureContext()) return;
+            
+            const input = document.getElementById(idInputURL);
+            input.value = "Obtendo...";
+            
+            navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const lat = position.coords.latitude;
-                    const long = position.coords.longitude;
-
-                    document.getElementById(idLat).value = lat.toFixed(6); // 6 casas decimais
-                    document.getElementById(idLong).value = long.toFixed(6);
+                    const lon = position.coords.longitude;
+                    const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    input.value = mapsLink;
                 },
-                // Erro
                 (error) => {
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            alert('Você negou o pedido de geolocalização.');
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            alert('Informação de localização indisponível.');
-                            break;
-                        case error.TIMEOUT:
-                            alert('Pedido de localização expirou.');
-                            break;
-                        default:
-                            alert('Um erro desconhecido ocorreu ao buscar localização.');
-                            break;
-                    }
+                    handleGeoError(error);
+                    input.value = "Falha ao obter localização.";
                 }
             );
         }
-        // --- FIM DA NOVA FUNÇÃO ---
+        // --- FIM DAS FUNÇÕES GEO ---
 
 
         /**
@@ -550,26 +581,25 @@
             gerarQRCode(whatsappString);
         });
         
-        // Geolocalização
+        // Geolocalização (Mapas) - MUDANÇA AQUI
         btnGeo.addEventListener('click', () => {
-            const lat = inputGeoLat.value.replace(',', '.');
-            const long = inputGeoLong.value.replace(',', '.');
+            const url = inputGeoUrl.value;
             
-            if (!lat || !long) {
-                alert('Latitude e Longitude são obrigatórias!');
+            if (!url || url === "Obtendo..." || url === "Falha ao obter localização.") {
+                alert('Por favor, obtenha um link de localização válido primeiro.');
                 return;
             }
-            const geoString = `geo:${lat},${long}`;
-            gerarQRCode(geoString);
+            // Simplesmente gera o QR Code da URL que está no campo
+            gerarQRCode(url);
         });
         
         // --- NOVOS EVENT LISTENERS ---
         btnVCardGeoAuto.addEventListener('click', () => {
-            obterGeolocalizacao('input-vcard-lat', 'input-vcard-long');
+            obterGeolocalizacaoLatLng('input-vcard-lat', 'input-vcard-long');
         });
 
         btnMapasGeoAuto.addEventListener('click', () => {
-            obterGeolocalizacao('input-geo-lat', 'input-geo-long');
+            obterGeolocalizacaoURL('input-geo-url');
         });
 
 
