@@ -580,7 +580,7 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    // CORRIGIDO: Formato do link e HTTPS
+                    // CORRIGIDO: Adicionado o "s" no https
                     const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
                     input.value = mapsLink;
                 },
