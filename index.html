@@ -341,7 +341,7 @@
                 <h2>Meu Negócio (Texto PRO)</h2>
                 <input type="text" id="input-negocio-titulo" placeholder="Empresa (Ex: INTERNET ULTRA FIBRA)">
                 <input type="text" id="input-negocio-slogan" placeholder="Slogan (Ex: OTIMO PLANOS...)">
-                <input type="tel" id="input-negocio-zap" placeholder="WhatsApp (Ex: 75998312170)">
+                <input type="text" id="input-negocio-zap" placeholder="WhatsApp (Ex: 75998312170)">
                 <input type="text" id="input-negocio-site" placeholder="Site (https://...)">
                 <input type="text" id="input-negocio-insta" placeholder="Instagram (https://...)">
                 <input type="text" id="input-negocio-mapa" placeholder="Link do Mapa (https://...)">
@@ -375,7 +375,7 @@
     
     <footer>
         <p>Todos os direitos reservados © 2025 Jânio Carlos P</p>
-        <p>WhatsApp: 55 75 99831-2170</p>
+        <p>WhatsApp: 55 75 998312170</p>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -682,8 +682,6 @@
             
             if (cta) textoFormatado += `\n${cta}`;
             
-            // --- A CORREÇÃO DO BUG ESTÁ AQUI ---
-            // Era 'textoFormatADO' e foi corrigido para 'textoFormatado'
             gerarQRCode(textoFormatado, event); 
         });
 
