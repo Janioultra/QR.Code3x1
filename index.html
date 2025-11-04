@@ -423,7 +423,7 @@
         const inputGeoUrl = document.getElementById('input-geo-url'); 
         const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto'); 
 
-        // --- NOVOS Seletores (Negócio) ---
+        // --- Seletores (Negócio) ---
         const btnNegocio = document.getElementById('btn-negocio');
         const inputNegocioTitulo = document.getElementById('input-negocio-titulo');
         const inputNegocioSlogan = document.getElementById('input-negocio-slogan');
@@ -656,7 +656,7 @@
             gerarQRCode(url, event);
         });
         
-        // --- NOVO EVENT LISTENER (Meu Negócio) ---
+        // --- Event Listener (Meu Negócio) ---
         btnNegocio.addEventListener('click', (event) => {
             const titulo = inputNegocioTitulo.value;
             const slogan = inputNegocioSlogan.value;
