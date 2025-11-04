@@ -20,6 +20,7 @@
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
+            margin: 0;
         }
 
         .container {
@@ -81,6 +82,8 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+            background-color: #fff;
+            color: #333;
         }
         
         input#input-geo-url {
@@ -104,6 +107,7 @@
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
+            transition: background-color 0.2s;
         }
         
         .box > button:last-of-type {
@@ -155,7 +159,6 @@
         input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
         input[type="color"]::-moz-color-swatch { border: none; border-radius: 6px; }
 
-
         .resultado {
             margin-top: 24px;
             text-align: center;
@@ -199,10 +202,54 @@
         .hidden {
             display: none;
         }
+        
+        /* --- ESTILOS DO MODAL DE AVISO --- */
+        #modal-aviso {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Começa escondido */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #modal-aviso.show {
+            display: flex; /* Mostra o modal */
+        }
+        #modal-aviso-content {
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        #modal-aviso-content h3 {
+            margin-top: 0;
+            color: #dc3545;
+        }
+        #modal-aviso-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        #btn-modal-fechar {
+            background-color: #007aff;
+            width: auto;
+            padding: 10px 20px;
+        }
+        #btn-modal-fechar:hover {
+            background-color: #0056b3;
+        }
+        /* --- FIM DOS ESTILOS DO MODAL --- */
+
 
         @media print {
             body { background-color: #fff; padding: 0; }
-            .container, footer { display: none; }
+            .container, footer, #modal-aviso { display: none; }
             .container > *:not(.resultado) { display: none; }
             .resultado { display: block; }
             .resultado h2, .botoes-resultado, .color-inputs { display: none; }
@@ -327,8 +374,8 @@
             <!-- 6. Localização (Mapas) -->
             <div class="box">
                 <h2>Localização (Google Maps)</h2>
-                <p class="text-sm text-slate-600 mb-2">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
-                <input type="text" id="input-geo-url" placeholder="Link do Google Maps aparecerá aqui..." readonly class="w-full p-2 border border-slate-300 rounded-md">
+                <p style="font-size: 0.9em; color: #555; margin-top: 0; margin-bottom: 10px;">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
+                <input type="text" id="input-geo-url" placeholder="Link do Google Maps aparecerá aqui..." readonly>
                 <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Obter Localização (Google Maps)</button>
                 <div class="color-inputs">
                     <div>
@@ -384,6 +431,15 @@
         <p>WhatsApp: 55 75 99831-2170</p>
     </footer>
 
+    <!-- MODAL DE AVISO (HTML) -->
+    <div id="modal-aviso">
+        <div id="modal-aviso-content">
+            <h3>Atenção!</h3>
+            <p id="modal-aviso-texto"></p>
+            <button id="btn-modal-fechar">Entendi</button>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <script>
@@ -391,6 +447,11 @@
         const qrContainer = document.getElementById('qrcode');
         const resultadoSection = document.querySelector('.resultado'); 
         let qrcode = null;
+
+        // --- Seletores do Modal de Aviso ---
+        const modalAviso = document.getElementById('modal-aviso');
+        const modalAvisoTexto = document.getElementById('modal-aviso-texto');
+        const btnModalFechar = document.getElementById('btn-modal-fechar');
 
         // --- Seletores dos Geradores (Bloco 1) ---
         const btnUrl = document.getElementById('btn-url');
@@ -436,13 +497,31 @@
         const inputNegocioZap = document.getElementById('input-negocio-zap');
         const inputNegocioSite = document.getElementById('input-negocio-site');
         const inputNegocioInsta = document.getElementById('input-negocio-insta');
-        // inputNegocioMapa REMOVIDO
         const inputNegocioCta = document.getElementById('input-negocio-cta');
 
         // --- Seletores (Resultado) ---
         const btnLimpar = document.getElementById('btn-limpar');
         const btnDownload = document.getElementById('btn-download');
         const btnPrint = document.getElementById('btn-print');
+
+        // --- FUNÇÕES DO MODAL DE AVISO ---
+        function showModal(message) {
+            modalAvisoTexto.textContent = message;
+            modalAviso.classList.add('show');
+        }
+
+        function closeModal() {
+            modalAviso.classList.remove('show');
+        }
+
+        btnModalFechar.addEventListener('click', closeModal);
+        modalAviso.addEventListener('click', (event) => {
+            // Fecha se clicar fora do conteúdo
+            if (event.target === modalAviso) {
+                closeModal();
+            }
+        });
+        // --- FIM DAS FUNÇÕES DO MODAL ---
 
 
         /**
@@ -451,24 +530,41 @@
         function gerarQRCode(texto, event) {
             limparQRCode(false); 
             
+            if (!event || !event.target) {
+                console.error("O evento de clique não foi passado corretamente para gerarQRCode.");
+                showModal("Ocorreu um erro inesperado. Tente novamente.");
+                return;
+            }
+            
             const box = event.target.closest('.box');
+            if (!box) {
+                 console.error("Não foi possível encontrar o '.box' pai do botão.");
+                 showModal("Ocorreu um erro inesperado (DOM). Tente novamente.");
+                 return;
+            }
+
             const corPrincipal = box.querySelector('.color-dark-input').value;
             const corFundo = box.querySelector('.color-light-input').value;
 
-            qrcode = new QRCode(qrContainer, {
-                text: texto,
-                width: 256,
-                height: 256,
-                colorDark: corPrincipal, 
-                colorLight: corFundo,   
-                correctLevel: QRCode.CorrectLevel.H 
-            });
-            
-            btnLimpar.classList.remove('hidden');
-            btnDownload.classList.remove('hidden');
-            btnPrint.classList.remove('hidden');
+            try {
+                qrcode = new QRCode(qrContainer, {
+                    text: texto,
+                    width: 256,
+                    height: 256,
+                    colorDark: corPrincipal, 
+                    colorLight: corFundo,   
+                    correctLevel: QRCode.CorrectLevel.H 
+                });
+                
+                btnLimpar.classList.remove('hidden');
+                btnDownload.classList.remove('hidden');
+                btnPrint.classList.remove('hidden');
 
-            resultadoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                resultadoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error("Erro ao gerar QR Code:", error);
+                showModal("Ocorreu um erro ao gerar o QR Code. Verifique os dados inseridos (ex: texto muito longo).");
+            }
         }
 
         /**
@@ -505,7 +601,7 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const canvas = document.querySelector('#qrcode canvas');
             if (!canvas) {
-                alert('Erro: Canvas do QR Code não encontrado.');
+                showModal('Erro: Canvas do QR Code não encontrado.'); // CORRIGIDO
                 return;
             }
             const imgURL = canvas.toDataURL('image/png');
@@ -526,30 +622,29 @@
         // --- FUNÇÕES DE GEOLOCALIZAÇÃO ---
         function checkSecureContext() {
             if (window.location.protocol !== 'https:') {
-                alert('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).');
+                showModal('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).'); // CORRIGIDO
                 return false;
             }
             if (!navigator.geolocation) {
-                alert('Geolocalização não é suportada pelo seu navegador.');
+                showModal('Geolocalização não é suportada pelo seu navegador.'); // CORRIGIDO
                 return false;
             }
             return true;
         }
         function handleGeoError(error) {
+            let message = 'Um erro desconhecido ocorreu ao buscar localização.';
             switch(error.code) {
                 case error.PERMISSION_DENIED:
-                    alert('Você negou o pedido de geolocalização.');
+                    message = 'Você negou o pedido de geolocalização.';
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    alert('Informação de localização indisponível.');
+                    message = 'Informação de localização indisponível.';
                     break;
                 case error.TIMEOUT:
-                    alert('Pedido de localização expirou.');
-                    break;
-                default:
-                    alert('Um erro desconhecido ocorreu ao buscar localização.');
+                    message = 'Pedido de localização expirou.';
                     break;
             }
+            showModal(message); // CORRIGIDO
         }
         function obterGeolocalizacaoLatLng(idLat, idLong) {
             if (!checkSecureContext()) return;
@@ -589,7 +684,7 @@
         // URL
         btnUrl.addEventListener('click', (event) => { 
             const url = inputUrl.value;
-            if (url) { gerarQRCode(url, event); } else { alert("Por favor, digite uma URL."); }
+            if (url) { gerarQRCode(url, event); } else { showModal("Por favor, digite uma URL."); } // CORRIGIDO
         });
 
         // Wi-Fi
@@ -599,7 +694,9 @@
             if (ssid) {
                 const wifiString = `WIFI:T:WPA;S:${ssid};P:${pass};;`;
                 gerarQRCode(wifiString, event);
-            } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
+            } else { 
+                showModal("Por favor, digite pelo menos o nome da rede (SSID)."); // CORRIGIDO
+            }
         });
         
         // vCard
@@ -614,7 +711,7 @@
             const long = inputVCardLong.value.replace(',', '.'); 
 
             if (!nome || (!tel && !email)) {
-                alert('Nome e pelo menos um Telefone ou E-mail são obrigatórios!');
+                showModal('Nome e pelo menos um Telefone ou E-mail são obrigatórios!'); // CORRIGIDO
                 return;
             }
             
@@ -641,7 +738,7 @@
             let msg = inputWhatsappMsg.value;
 
             if (!tel) {
-                alert('O número de telefone é obrigatório!');
+                showModal('O número de telefone é obrigatório!'); // CORRIGIDO
                 return;
             }
             tel = tel.replace(/\D/g, '');
@@ -656,7 +753,7 @@
             const url = inputGeoUrl.value;
             
             if (!url || url === "Obtendo..." || url === "Falha ao obter localização.") {
-                alert('Por favor, obtenha um link de localização válido primeiro.');
+                showModal('Por favor, obtenha um link de localização válido primeiro.'); // CORRIGIDO
                 return;
             }
             gerarQRCode(url, event);
@@ -669,26 +766,20 @@
             const zap = inputNegocioZap.value;
             const site = inputNegocioSite.value;
             const insta = inputNegocioInsta.value;
-            // const mapa = inputNegocioMapa.value; // <-- REMOVIDO
             const cta = inputNegocioCta.value;
             
             if (!titulo) {
-                alert('O Título da Empresa é obrigatório!');
+                showModal('O Título da Empresa é obrigatório!'); // CORRIGIDO
                 return;
             }
             
-            // \n = Quebra de linha
             let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
             if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
-            
             if (zap) textoFormatado += `📱 WhatsApp: ${zap}\n`;
             if (site) textoFormatado += `🌐 Site: ${site}\n`;
             if (insta) textoFormatado += `📸 Instagram: ${insta}\n`;
-            // if (mapa) textoFormatado += `📍 Localização: ${mapa}\n`; // <-- REMOVIDO
-            
             if (cta) textoFormatado += `\n${cta}`;
             
-            // --- CORREÇÃO DO BUG 'textoFormatADO' ---
             gerarQRCode(textoFormatado, event); 
         });
 
@@ -709,7 +800,8 @@
             return `${id}${length}${value}`;
         }
         function simplificarTexto(text) {
-            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/g, '');
+            if (!text) return '';
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s.-]/g, ''); // Mantém pontos e hífens para valores
         }
         function crc16(data) {
             let crc = 0xFFFF;
@@ -721,6 +813,7 @@
             }
             return ('0000' + (crc & 0xFFFF).toString(16).toUpperCase()).slice(-4);
         }
+        
         btnPix.addEventListener('click', (event) => { 
             const key = inputPixKey.value;
             let name = inputPixName.value;
@@ -729,33 +822,51 @@
             let txid = inputPixTxid.value;
 
             if (!key || !name || !city) {
-                alert("Chave PIX, Nome e Cidade são obrigatórios!");
+                showModal("Chave PIX, Nome e Cidade são obrigatórios!"); // CORRIGIDO
                 return;
             }
+            
+            // Limpa e formata dados
+            name = simplificarTexto(name).substring(0, 25);
+            city = simplificarTexto(city).substring(0, 15);
+            txid = txid ? simplificarTexto(txid).replace(/\s/g, '').substring(0, 25) : '***';
+             if (txid.length === 0) txid = '***';
+
             const merchantAccountInfo = [
                 formatarEMV('00', 'br.gov.bcb.pix'),
                 formatarEMV('01', key)
             ].join('');
+
             let brCode = [
                 formatarEMV('00', '01'),
                 formatarEMV('26', merchantAccountInfo),
-                formatarEMV('52', '0000'),
-                formatarEMV('53', '986')
+                formatarEMV('52', '0000'), // Merchant Category Code (0000 = Não especificado)
+                formatarEMV('53', '986')  // Currency Code (986 = BRL)
             ];
+
             if (amount) {
                 const amountComPonto = amount.replace(",", "."); 
-                const valorFormatado = parseFloat(amountComPonto).toFixed(2);
+                const valorNumerico = parseFloat(amountComPonto);
+                
+                if (isNaN(valorNumerico) || valorNumerico <= 0) {
+                     showModal("O valor do PIX parece inválido. Use números como 10,50.");
+                     return;
+                }
+                const valorFormatado = valorNumerico.toFixed(2);
                 brCode.push(formatarEMV('54', valorFormatado));
             }
-            brCode.push(formatarEMV('58', 'BR'));
-            name = simplificarTexto(name).substring(0, 25);
-            brCode.push(formatarEMV('59', name));
-            city = simplificarTexto(city).substring(0, 15);
-            brCode.push(formatarEMV('60', city));
-            txid = txid ? txid.replace(/\s/g, '') : '***';
+
+            brCode.push(formatarEMV('58', 'BR')); // Country Code
+            brCode.push(formatarEMV('59', name)); // Merchant Name
+            brCode.push(formatarEMV('60', city)); // Merchant City
+
+            // Additional Data Field (TXID)
             const additionalData = formatarEMV('05', txid);
             brCode.push(formatarEMV('62', additionalData));
-            brCode.push('6304');
+            
+            // CRC16
+            brCode.push('6304'); // ID do CRC
+            
             let stringPIX = brCode.join('');
             const checksum = crc16(stringPIX);
             const brCodeCompleto = stringPIX + checksum;
@@ -766,4 +877,3 @@
     </script>
 </body>
 </html>
-
