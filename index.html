@@ -289,7 +289,7 @@
             
             <div class="box">
                 <button class="btn-delete-card" title="Excluir card">×</button>
-                <h2 contenteditable="true">Conexão Wi-Fi</h2>
+                <h2 contentEditable="true">Conexão Wi-Fi</h2>
                 <input type="text" id="input-wifi-ssid" placeholder="Nome da rede (SSID)">
                 <input type="password" id="input-wifi-pass" placeholder="Senha da rede">
                 <div class="color-inputs">
@@ -335,9 +335,14 @@
                 <input type="tel" id="input-vcard-tel" placeholder="Telefone (ex: +55 75 9...)">
                 
                 <input type="text" id="input-vcard-site" placeholder="Site (ex: https://...)">
-                <input type="text" id="input-vcard-site2" placeholder="Site 2 (Opcional)"> <input type="text" id="input-vcard-lat" placeholder="Latitude (opcional)">
-                <input type="text" id="input-vcard-long" placeholder="Longitude (opcional)">
-                <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização</button>
+                
+                <input type="text" id="input-vcard-note" placeholder="Observação (Ex: Veja os planos)"> 
+
+                <input type="text" id="input-vcard-maplink" placeholder="Cole o link do Google Maps aqui (Opcional)">
+
+                <input type="text" id="input-vcard-lat" placeholder="Latitude (autodetectar)">
+                <input type="text" id="input-vcard-long" placeholder="Longitude (autodetectar)">
+                <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização (Autodetectar)</button>
                 <div class="color-inputs">
                     <div>
                         <label>Cor:</label>
@@ -431,15 +436,15 @@
         const inputPixAmount = document.getElementById('input-pix-amount');
         const inputPixTxid = document.getElementById('input-pix-txid');
         
-        // --- Seletores do vCard (MODIFICADO) ---
+        // --- MUDANÇA AQUI: Seletores do vCard (MODIFICADO) ---
         const btnVCard = document.getElementById('btn-vcard');
         const inputVCardNome = document.getElementById('input-vcard-nome');
         const inputVCardCargo = document.getElementById('input-vcard-cargo');
         const inputVCardEmpresa = document.getElementById('input-vcard-empresa');
         const inputVCardTel = document.getElementById('input-vcard-tel');
-        // const inputVCardEmail = document.getElementById('input-vcard-email'); // REMOVIDO
         const inputVCardSite = document.getElementById('input-vcard-site');
-        const inputVCardSite2 = document.getElementById('input-vcard-site2'); // ADICIONADO
+        const inputVCardNote = document.getElementById('input-vcard-note'); // "Site 2" virou "Note"
+        const inputVCardMapLink = document.getElementById('input-vcard-maplink'); // Novo campo de link de mapa
         const inputVCardLat = document.getElementById('input-vcard-lat');
         const inputVCardLong = document.getElementById('input-vcard-long');
         const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto'); 
@@ -588,7 +593,7 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    const mapsLink = `http://googleusercontent.com/maps/google.com/0{lat},${lon}`;
                     input.value = mapsLink;
                 },
                 (error) => {
@@ -621,19 +626,18 @@
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
-        // vCard (MODIFICADO)
+        // --- MUDANÇA AQUI: Lógica do vCard (MODIFICADO) ---
         btnVCard.addEventListener('click', (event) => { 
             const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
             const empresa = inputVCardEmpresa.value;
             const tel = inputVCardTel.value;
-            // const email = inputVCardEmail.value; // REMOVIDO
             const site = inputVCardSite.value;
-            const site2 = inputVCardSite2.value; // ADICIONADO
+            const note = inputVCardNote.value; // Pegando o valor da Observação
+            const mapLink = inputVCardMapLink.value; // Pegando o link do mapa colado
             const lat = inputVCardLat.value.replace(',', '.'); 
             const long = inputVCardLong.value.replace(',', '.'); 
 
-            // Validação modificada
             if (!nome || (!tel && !site)) {
                 alert('Nome e pelo menos um Telefone ou Site são obrigatórios!');
                 return;
@@ -643,19 +647,29 @@
                 'BEGIN:VCARD', 'VERSION:3.0',
                 `N:${nome}`, `FN:${nome}`, `ORG:${empresa}`, `TITLE:${cargo}`,
                 `TEL;TYPE=WORK,VOICE:${tel}`, 
-                `URL:${site}` // Site 1
+                `URL:${site}`
             ];
 
-            // Adiciona o site 2 se ele for preenchido
-            if (site2) {
-                vCardString.push(`URL:${site2}`); // ADICIONADO
+            // Adiciona a observação (Ex: "VEJA OS PLANOS")
+            if (note) {
+                vCardString.push(`NOTE:${note}`);
             }
             
-            if (lat && long) {
-                vCardString.push(`GEO:${lat},${long}`);
-                const mapsLink = `https://www.google.com/maps?q=${lat},${long}`;
-                vCardString.push(`NOTE:Ver no mapa: ${mapsLink}`);
+            // --- LÓGICA DE LOCALIZAÇÃO ATUALIZADA ---
+            
+            // 1. Prioriza o link colado
+            if (mapLink) {
+                // Adiciona o link do mapa com o prefixo "ENDEREÇO:"
+                vCardString.push(`NOTE:ENDEREÇO: ${mapLink}`);
+            } 
+            // 2. Se não tiver link colado, usa o autodetectar
+            else if (lat && long) {
+                const autoMapsLink = `http://googleusercontent.com/maps/google.com/0{lat},${long}`;
+                // Adiciona o link do mapa com o prefixo "ENDEREÇO:"
+                vCardString.push(`NOTE:ENDEREÇO: ${autoMapsLink}`);
             }
+            
+            // O campo "GEO:" (que mostrava os números soltos) foi REMOVIDO
             
             vCardString.push('END:VCARD');
             
