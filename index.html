@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de QR Code (Editável)</title>
+    <title>Gerador de QR Code</title>
     
     <style>
         html {
@@ -60,32 +60,7 @@
             }
         }
 
-        .btn-delete-card {
-            position: absolute;
-            top: 8px;
-            right: 10px;
-            width: 24px;
-            height: 24px;
-            padding: 0;
-            margin: 0;
-            background-color: #f1f5f9;
-            color: #94a3b8;
-            border: 1px solid #e2e8f0;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            line-height: 22px;
-            text-align: center;
-            z-index: 10;
-        }
-        .btn-delete-card:hover {
-            background-color: #ef4444; 
-            color: white;
-        }
-        
         .box {
-            position: relative; 
             background-color: rgba(255, 255, 255, 0.5); 
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -93,25 +68,6 @@
             display: flex;
             flex-direction: column;
         }
-        
-        h2[contenteditable="true"] {
-            cursor: move; 
-            user-select: none; 
-        }
-        h2[contenteditable="true"]:focus {
-            background-color: #fff;
-            box-shadow: 0 0 0 2px #34c759;
-            outline: none;
-            border-radius: 4px;
-            padding: 2px 4px;
-            margin-left: -4px;
-            cursor: text;
-        }
-        .sortable-ghost {
-            opacity: 0.4;
-            background: #c8ebf1;
-        }
-
 
         input[type="text"],
         input[type="password"],
@@ -128,8 +84,8 @@
         }
         
         input#input-geo-url {
-            background-color: #fff; 
-            color: #333; 
+            background-color: #f1f5f9; 
+            color: #64748b; 
             font-size: 0.9em;
         }
         
@@ -269,10 +225,8 @@
         <h1>Gerador de QR Code</h1>
 
         <div class="geradores">
-            
             <div class="box">
-                <button class="btn-delete-card" title="Excluir card">×</button>
-                <h2 contenteditable="true">Site / URL</h2>
+                <h2>Site / URL</h2>
                 <input type="text" id="input-url" placeholder="https://seusite.com.br">
                 <div class="color-inputs">
                     <div>
@@ -288,8 +242,7 @@
             </div>
             
             <div class="box">
-                <button class="btn-delete-card" title="Excluir card">×</button>
-                <h2 contentEditable="true">Conexão Wi-Fi</h2>
+                <h2>Conexão Wi-Fi</h2>
                 <input type="text" id="input-wifi-ssid" placeholder="Nome da rede (SSID)">
                 <input type="password" id="input-wifi-pass" placeholder="Senha da rede">
                 <div class="color-inputs">
@@ -306,8 +259,7 @@
             </div>
             
             <div class="box">
-                <button class="btn-delete-card" title="Excluir card">×</button>
-                <h2 contenteditable="true">PIX (Gerador BR Code)</h2>
+                <h2>PIX (Gerador BR Code)</h2>
                 <input type="text" id="input-pix-key" placeholder="Sua Chave PIX (CPF, e-mail, etc)">
                 <input type="text" id="input-pix-name" placeholder="Seu Nome (até 25 chars)">
                 <input type="text" id="input-pix-city" placeholder="Sua Cidade (até 15 chars)">
@@ -327,21 +279,16 @@
             </div>
 
             <div class="box">
-                <button class="btn-delete-card" title="Excluir card">×</button>
-                <h2 contenteditable="true">Cartão de Visita (vCard)</h2>
+                <h2>Cartão de Visita (vCard)</h2>
                 <input type="text" id="input-vcard-nome" placeholder="Nome Completo">
                 <input type="text" id="input-vcard-cargo" placeholder="Cargo (Ex: Desenvolvedor)">
                 <input type="text" id="input-vcard-empresa" placeholder="Empresa">
                 <input type="tel" id="input-vcard-tel" placeholder="Telefone (ex: +55 75 9...)">
-                
+                <input type="email" id="input-vcard-email" placeholder="E-mail">
                 <input type="text" id="input-vcard-site" placeholder="Site (ex: https://...)">
-                
-                <input type="text" id="input-vcard-note" placeholder="Observação (Ex: Veja os planos)"> 
-
-                <input type="text" id="input-vcard-maplink" placeholder="Cole o link ou clique no botão abaixo">
-                
-                <button type="button" id="btn-vcard-map-auto" class="btn-geo-auto">📍 Obter Localização para vCard</button>
-
+                <input type="text" id="input-vcard-lat" placeholder="Latitude (opcional)">
+                <input type="text" id="input-vcard-long" placeholder="Longitude (opcional)">
+                <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização</button>
                 <div class="color-inputs">
                     <div>
                         <label>Cor:</label>
@@ -356,8 +303,7 @@
             </div>
             
             <div class="box">
-                <button class="btn-delete-card" title="Excluir card">×</button>
-                <h2 contenteditable="true">WhatsApp</h2>
+                <h2>WhatsApp</h2>
                 <input type="tel" id="input-whatsapp-tel" placeholder="Nº (ex: 5575998312170)">
                 <textarea id="input-whatsapp-msg" placeholder="Mensagem padrão (opcional)"></textarea>
                 <div class="color-inputs">
@@ -374,12 +320,9 @@
             </div>
             
             <div class="box">
-                <button class="btn-delete-card" title="Excluir card">×</button>
-                <h2 contenteditable="true">Localização (Google Maps)</h2>
-                <p class="text-sm text-slate-600 mb-2">Cole um link ou clique no botão para pegar sua localização atual.</p>
-                
-                <input type="text" id="input-geo-url" placeholder="Cole o link ou clique no botão 'Obter'" class="w-full p-2 border border-slate-300 rounded-md">
-                
+                <h2>Localização (Google Maps)</h2>
+                <p class="text-sm text-slate-600 mb-2">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
+                <input type="text" id="input-geo-url" placeholder="Link do Google Maps aparecerá aqui..." readonly class="w-full p-2 border border-slate-300 rounded-md">
                 <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Obter Localização (Google Maps)</button>
                 <div class="color-inputs">
                     <div>
@@ -392,6 +335,28 @@
                     </div>
                 </div>
                 <button id="btn-geo">Gerar Mapa</button>
+            </div>
+            
+            <div class="box">
+                <h2>Meu Negócio (Texto PRO)</h2>
+                <input type="text" id="input-negocio-titulo" placeholder="Empresa (Ex: INTERNET ULTRA FIBRA)">
+                <input type="text" id="input-negocio-slogan" placeholder="Slogan (Ex: OTIMO PLANOS...)">
+                <input type="tel" id="input-negocio-zap" placeholder="WhatsApp (Ex: 75998312170)">
+                <input type="text" id="input-negocio-site" placeholder="Site (https://...)">
+                <input type="text" id="input-negocio-insta" placeholder="Instagram (https://...)">
+                <input type="text" id="input-negocio-mapa" placeholder="Link do Mapa (https://...)">
+                <textarea id="input-negocio-cta" placeholder="Chamada (Ex: CLICK NO SITE...)"></textarea>
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
+                <button id="btn-negocio">Gerar Anúncio</button>
             </div>
 
         </div> 
@@ -413,7 +378,6 @@
         <p>WhatsApp: 55 75 99831-2170</p>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <script>
@@ -443,10 +407,11 @@
         const inputVCardCargo = document.getElementById('input-vcard-cargo');
         const inputVCardEmpresa = document.getElementById('input-vcard-empresa');
         const inputVCardTel = document.getElementById('input-vcard-tel');
+        const inputVCardEmail = document.getElementById('input-vcard-email');
         const inputVCardSite = document.getElementById('input-vcard-site');
-        const inputVCardNote = document.getElementById('input-vcard-note');
-        const inputVCardMapLink = document.getElementById('input-vcard-maplink');
-        const btnVCardMapAuto = document.getElementById('btn-vcard-map-auto'); 
+        const inputVCardLat = document.getElementById('input-vcard-lat');
+        const inputVCardLong = document.getElementById('input-vcard-long');
+        const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto'); 
         
         // --- Seletores (WhatsApp) ---
         const btnWhatsapp = document.getElementById('btn-whatsapp');
@@ -457,6 +422,16 @@
         const btnGeo = document.getElementById('btn-geo');
         const inputGeoUrl = document.getElementById('input-geo-url'); 
         const btnMapasGeoAuto = document.getElementById('btn-mapas-geo-auto'); 
+
+        // --- NOVOS Seletores (Negócio) ---
+        const btnNegocio = document.getElementById('btn-negocio');
+        const inputNegocioTitulo = document.getElementById('input-negocio-titulo');
+        const inputNegocioSlogan = document.getElementById('input-negocio-slogan');
+        const inputNegocioZap = document.getElementById('input-negocio-zap');
+        const inputNegocioSite = document.getElementById('input-negocio-site');
+        const inputNegocioInsta = document.getElementById('input-negocio-insta');
+        const inputNegocioMapa = document.getElementById('input-negocio-mapa');
+        const inputNegocioCta = document.getElementById('input-negocio-cta');
 
         // --- Seletores (Resultado) ---
         const btnLimpar = document.getElementById('btn-limpar');
@@ -470,10 +445,7 @@
         function gerarQRCode(texto, event) {
             limparQRCode(false); 
             
-            if (!event.target) return; 
             const box = event.target.closest('.box');
-            if (!box) return; 
-
             const corPrincipal = box.querySelector('.color-dark-input').value;
             const corFundo = box.querySelector('.color-light-input').value;
 
@@ -573,7 +545,16 @@
                     break;
             }
         }
-        
+        function obterGeolocalizacaoLatLng(idLat, idLong) {
+            if (!checkSecureContext()) return;
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    document.getElementById(idLat).value = position.coords.latitude.toFixed(6);
+                    document.getElementById(idLong).value = position.coords.longitude.toFixed(6);
+                },
+                handleGeoError
+            );
+        }
         
         function obterGeolocalizacaoURL(idInputURL) {
             if (!checkSecureContext()) return;
@@ -583,18 +564,13 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    
-                    // --- CORREÇÃO FINAL ESTÁ AQUI ---
-                    // Formato de link que funciona (com https e ?q=)
-                    const mapsLink = `https://www.google.com/maps?q=-12.8423974999999$?q=${lat},${lon}`;
-                    
+                    const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
                     input.value = mapsLink;
                 },
                 (error) => {
                     handleGeoError(error);
                     input.value = "Falha ao obter localização.";
-                },
-                { enableHighAccuracy: true } 
+                }
             );
         }
         // --- FIM DAS FUNÇÕES GEO ---
@@ -620,88 +596,40 @@
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
-        // --- MUDANÇA AQUI: vCard (Lógica do Nome Corrigida) ---
+        // vCard
         btnVCard.addEventListener('click', (event) => { 
-            let nome = inputVCardNome.value;
+            const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
             const empresa = inputVCardEmpresa.value;
-            let tel = inputVCardTel.value; // Usar 'let'
-            let site = inputVCardSite.value; // Usar 'let'
-            const note = inputVCardNote.value; 
-            let mapLink = inputVCardMapLink.value; // Usar 'let'
+            const tel = inputVCardTel.value;
+            const email = inputVCardEmail.value;
+            const site = inputVCardSite.value;
+            const lat = inputVCardLat.value.replace(',', '.'); 
+            const long = inputVCardLong.value.replace(',', '.'); 
 
-            // O vCard É OBRIGADO a ter um NOME (N: e FN:).
-            if (!nome) {
-                if (cargo) {
-                    nome = cargo;
-                } else if (empresa) {
-                    nome = empresa;
-                } else {
-                    alert("Por favor, preencha pelo menos um Nome, Cargo ou Empresa.");
-                    return; 
-                }
+            if (!nome || (!tel && !email)) {
+                alert('Nome e pelo menos um Telefone ou E-mail são obrigatórios!');
+                return;
             }
-
+            
             let vCardString = [
                 'BEGIN:VCARD', 'VERSION:3.0',
-                `N:${nome}`,
-                `FN:${nome}`
+                `N:${nome}`, `FN:${nome}`, `ORG:${empresa}`, `TITLE:${cargo}`,
+                `TEL;TYPE=WORK,VOICE:${tel}`, `EMAIL:${email}`, `URL:${site}`
             ];
-
-            if (empresa) {
-                vCardString.push(`ORG:${empresa}`);
-            }
-            if (cargo) {
-                vCardString.push(`TITLE:${cargo}`);
-            }
-
-            // --- LÓGICA INTELIGENTE (NOVA) ---
             
-            // 1. Telefone
-            if (tel) {
-                const telLimpo = tel.replace(/[^\d+#]/g, ''); // Limpa
-                if (telLimpo.match(/[\d+#]/)) { // Se for um número
-                    vCardString.push(`TEL;TYPE=WORK,VOICE:${telLimpo}`);
-                } else { // Se for texto
-                    vCardString.push(`NOTE:Telefone (info): ${tel}`);
-                }
+            if (lat && long) {
+                vCardString.push(`GEO:${lat},${long}`);
+                const mapsLink = `https://www.google.com/maps?q=${lat},${long}`;
+                vCardString.push(`NOTE:Ver no mapa: ${mapsLink}`);
             }
-            
-            // Função helper
-            function isUrl(str) {
-                return str.toLowerCase().startsWith('http') || str.toLowerCase().startsWith('www.');
-            }
-
-            // 2. Site
-            if (site) {
-                if (isUrl(site)) { // Se for URL
-                    vCardString.push(`URL:${site.replace(/\s/g, '%20')}`);
-                } else { // Se for texto
-                    vCardString.push(`NOTE:Site (info): ${site}`);
-                }
-            }
-            
-            // 3. Link do Mapa
-            if (mapLink) {
-                 if (isUrl(mapLink)) { // Se for URL
-                    vCardString.push(`URL:${mapLink.replace(/\s/g, '%20')}`);
-                } else { // Se for texto
-                    vCardString.push(`NOTE:Endereço (info): ${mapLink}`);
-                }
-            } 
-            
-            // 4. Observação
-            if (note) {
-                vCardString.push(`NOTE:${note}`);
-            }
-            // --- FIM DA LÓGICA ---
             
             vCardString.push('END:VCARD');
             
             gerarQRCode(vCardString.join('\n'), event);
         });
 
-        // WhatsApp (Corrigido)
+        // WhatsApp
         btnWhatsapp.addEventListener('click', (event) => { 
             let tel = inputWhatsappTel.value;
             let msg = inputWhatsappMsg.value;
@@ -717,39 +645,64 @@
             gerarQRCode(whatsappString, event);
         });
         
-        // Geolocalização (Corrigido)
+        // Geolocalização
         btnGeo.addEventListener('click', (event) => { 
             const url = inputGeoUrl.value;
             
             if (!url || url === "Obtendo..." || url === "Falha ao obter localização.") {
-                alert('Por favor, cole um link ou use o botão "Obter Localização".');
+                alert('Por favor, obtenha um link de localização válido primeiro.');
                 return;
             }
             gerarQRCode(url, event);
         });
         
+        // --- NOVO EVENT LISTENER (Meu Negócio) ---
+        btnNegocio.addEventListener('click', (event) => {
+            const titulo = inputNegocioTitulo.value;
+            const slogan = inputNegocioSlogan.value;
+            const zap = inputNegocioZap.value;
+            const site = inputNegocioSite.value;
+            const insta = inputNegocioInsta.value;
+            const mapa = inputNegocioMapa.value;
+            const cta = inputNegocioCta.value;
+            
+            if (!titulo) {
+                alert('O Título da Empresa é obrigatório!');
+                return;
+            }
+            
+            // \n = Quebra de linha
+            let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
+            if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
+            
+            if (zap) textoFormatado += `📱 WhatsApp: ${zap}\n`;
+            if (site) textoFormatado += `🌐 Site: ${site}\n`;
+            if (insta) textoFormatado += `📸 Instagram: ${insta}\n`;
+            if (mapa) textoFormatado += `📍 Localização: ${mapa}\n`;
+            
+            if (cta) textoFormatado += `\n${cta}`;
+            
+            gerarQRCode(textoFormatado, event);
+        });
+
         // Botoões GEO
+        btnVCardGeoAuto.addEventListener('click', () => {
+            obterGeolocalizacaoLatLng('input-vcard-lat', 'input-vcard-long');
+        });
         btnMapasGeoAuto.addEventListener('click', () => {
             obterGeolocalizacaoURL('input-geo-url');
-        });
-        
-        btnVCardMapAuto.addEventListener('click', () => {
-            obterGeolocalizacaoURL('input-vcard-maplink');
         });
 
 
         /**
-         * Funções do PIX (Corrigido)
+         * Funções do PIX
          */
         function formatarEMV(id, value) {
             const length = ('00' + value.length).slice(-2);
             return `${id}${length}${value}`;
         }
         function simplificarTexto(text) {
-            if (!text) return ''; 
-            return text.normalize("NFD").replace(/[\u0040\u005B-\u0060\u007B-\u007E]/g, "") 
-                         .replace(/[\u0300-\u036f]/g, "") 
-                         .substring(0, 25); 
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/g, '');
         }
         function crc16(data) {
             let crc = 0xFFFF;
@@ -772,83 +725,35 @@
                 alert("Chave PIX, Nome e Cidade são obrigatórios!");
                 return;
             }
-            if (!key.match(/^(\+?[0-9]{11,}|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}|[0-9]{11}|[0-9]{14}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i)) {
-               console.warn("Chave PIX não parece estar em um formato padrão.");
-            }
-            
             const merchantAccountInfo = [
                 formatarEMV('00', 'br.gov.bcb.pix'),
-                formatarEMV('01', key.replace(/\s/g, '')) 
+                formatarEMV('01', key)
             ].join('');
-            
             let brCode = [
                 formatarEMV('00', '01'),
                 formatarEMV('26', merchantAccountInfo),
-                formatarEMV('52', '0000'), 
-                formatarEMV('53', '986') 
+                formatarEMV('52', '0000'),
+                formatarEMV('53', '986')
             ];
-
             if (amount) {
                 const amountComPonto = amount.replace(",", "."); 
                 const valorFormatado = parseFloat(amountComPonto).toFixed(2);
-                if (isNaN(valorFormatado) || valorFormatado <= 0) {
-                    alert("Valor do PIX inválido.");
-                    return;
-                }
                 brCode.push(formatarEMV('54', valorFormatado));
             }
-            
-            brCode.push(formatarEMV('58', 'BR')); 
-            
-            name = simplificarTexto(name).substring(0, 25).toUpperCase();
+            brCode.push(formatarEMV('58', 'BR'));
+            name = simplificarTexto(name).substring(0, 25);
             brCode.push(formatarEMV('59', name));
-            
-            city = simplificarTexto(city).substring(0, 15).toUpperCase();
+            city = simplificarTexto(city).substring(0, 15);
             brCode.push(formatarEMV('60', city));
-            
-            txid = txid ? txid.replace(/\s/g, '').substring(0, 25) : '***';
-            if (!txid.match(/^[a-zA-Z0-9]{1,25}$/) && txid !== '***') {
-                 alert("O ID da Transação (txid) deve conter apenas letras e números, sem espaços, e ter no máximo 25 caracteres.");
-                 return;
-            }
-            
+            txid = txid ? txid.replace(/\s/g, '') : '***';
             const additionalData = formatarEMV('05', txid);
             brCode.push(formatarEMV('62', additionalData));
-            
-            brCode.push('6304'); 
-            
+            brCode.push('6304');
             let stringPIX = brCode.join('');
             const checksum = crc16(stringPIX);
             const brCodeCompleto = stringPIX + checksum;
             
             gerarQRCode(brCodeCompleto, event);
-        });
-        
-        
-        /**
-         * Funções de Edição dos Cards (Excluir e Arrastar)
-         */
-         
-        const geradoresContainer = document.querySelector('.geradores');
-
-        // 1. Ativar o "Arrastar e Soltar"
-        new Sortable(geradoresContainer, {
-            animation: 150,
-            handle: 'h2', // Arrastar pelo título (h2)
-            ghostClass: 'sortable-ghost' 
-        });
-
-        // 2. Ativar os botões de "Excluir"
-        geradoresContainer.addEventListener('click', (event) => {
-            if (event.target.classList.contains('btn-delete-card')) {
-                if (confirm('Tem certeza que deseja excluir este card?')) {
-                    event.target.closest('.box').remove();
-                    
-                    if(geradoresContainer.children.length === 0) {
-                        limparQRCode(true);
-                    }
-                }
-            }
         });
 
     </script>
