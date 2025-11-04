@@ -783,11 +783,15 @@
             }
 
             // NOVO: "Disfarça" as URLs para o iOS não as detectar automaticamente
+            // 1. Remove http
+            // 2. Adiciona um espaço de largura zero (invisível - \u200B) depois de cada ponto para "quebrar" a detecção de link do iOS.
             if (site) {
                 site = site.replace('https://', '').replace('http://', '');
+                site = site.replace(/\./g, '.\u200B'); // Adiciona espaço invisível
             }
             if (insta) {
                 insta = insta.replace('https://', '').replace('http://', '');
+                insta = insta.replace(/\./g, '.\u200B'); // Adiciona espaço invisível
             }
             
             let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
@@ -894,6 +898,3 @@
     </script>
 </body>
 </html>
-
-
-
