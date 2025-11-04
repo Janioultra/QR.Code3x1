@@ -564,6 +564,7 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
+                    // --- CORREÇÃO DO LINK DO MAPA AQUI ---
                     const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
                     input.value = mapsLink;
                 },
@@ -620,6 +621,7 @@
             
             if (lat && long) {
                 vCardString.push(`GEO:${lat},${long}`);
+                // --- CORREÇÃO DO LINK DO MAPA AQUI ---
                 const mapsLink = `https://www.google.com/maps?q=${lat},${long}`;
                 vCardString.push(`NOTE:Ver no mapa: ${mapsLink}`);
             }
@@ -656,7 +658,7 @@
             gerarQRCode(url, event);
         });
         
-        // --- CORREÇÃO AQUI: Event Listener (Meu Negócio) ---
+        // --- Event Listener (Meu Negócio) ---
         btnNegocio.addEventListener('click', (event) => {
             const titulo = inputNegocioTitulo.value;
             const slogan = inputNegocioSlogan.value;
