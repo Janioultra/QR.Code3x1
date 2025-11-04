@@ -771,37 +771,33 @@
             const titulo = inputNegocioTitulo.value;
             const slogan = inputNegocioSlogan.value;
             const zap = inputNegocioZap.value;
-            const site = inputNegocioSite.value;
-            const insta = inputNegocioInsta.value;
+            let site = inputNegocioSite.value; // MUDANÇA: de 'const' para 'let'
+            let insta = inputNegocioInsta.value; // MUDANÇA: de 'const' para 'let'
             const cta = inputNegocioCta.value;
             
-            // CENÁRIO 1: O campo SITE está preenchido (prioridade).
-            // Gera um QR Code de URL (para iOS e Android abrirem o link).
-            if (site) {
-                if (!site.startsWith('http://') && !site.startsWith('https://')) {
-                    showModal('O campo Site parece inválido. Ele deve começar com https:// ou http://');
-                    return;
-                }
-                gerarQRCode(site, event); 
+            // LÓGICA REVERTIDA: Agora sempre gera texto
             
-            // CENÁRIO 2: O campo SITE está VAZIO.
-            // Gera um QR Code de TEXTO (comportamento antigo do Android).
-            } else {
-                if (!titulo) {
-                    showModal('O campo Site está vazio. Para gerar um QR Code de texto, pelo menos o Título da Empresa é obrigatório!'); 
-                    return;
-                }
-                
-                let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
-                if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
-                // EMOJIS REMOVIDOS
-                if (zap) textoFormatado += `WhatsApp: ${zap}\n`;
-                // Site não é incluído pois está vazio
-                if (insta) textoFormatado += `Instagram: ${insta}\n`;
-                if (cta) textoFormatado += `\n${cta}`;
-                
-                gerarQRCode(textoFormatado, event); 
+            if (!titulo) {
+                showModal('O Título da Empresa é obrigatório!'); 
+                return;
             }
+
+            // NOVO: "Disfarça" as URLs para o iOS não as detectar automaticamente
+            if (site) {
+                site = site.replace('https://', '').replace('http://', '');
+            }
+            if (insta) {
+                insta = insta.replace('https://', '').replace('http://', '');
+            }
+            
+            let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
+            if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
+            if (zap) textoFormatado += `WhatsApp: ${zap}\n`;
+            if (site) textoFormatado += `Site: ${site}\n`; // Adiciona a URL "disfarçada"
+            if (insta) textoFormatado += `Instagram: ${insta}\n`; // Adiciona a URL "disfarçada"
+            if (cta) textoFormatado += `\n${cta}`;
+            
+            gerarQRCode(textoFormatado, event); 
         });
 
         // Botoões GEO
@@ -898,5 +894,6 @@
     </script>
 </body>
 </html>
+
 
 
