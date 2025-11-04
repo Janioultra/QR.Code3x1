@@ -343,7 +343,7 @@
                 <button id="btn-geo">Gerar Mapa</button>
             </div>
             
-            <!-- 7. Meu Negócio -->
+            <!-- 7. Meu Negócio (COM O CAMPO DO MAPA REMOVIDO) -->
             <div class="box">
                 <h2>Meu Negócio (Texto PRO)</h2>
                 <input type="text" id="input-negocio-titulo" placeholder="Empresa (Ex: INTERNET ULTRA FIBRA)">
@@ -351,7 +351,6 @@
                 <input type="tel" id="input-negocio-zap" placeholder="WhatsApp (Ex: 75998312170)">
                 <input type="text" id="input-negocio-site" placeholder="Site (https://...)">
                 <input type="text" id="input-negocio-insta" placeholder="Instagram (https://...)">
-                <input type="text" id="input-negocio-mapa" placeholder="Link do Mapa (https://...)">
                 <textarea id="input-negocio-cta" placeholder="Chamada (Ex: CLICK NO SITE...)"></textarea>
                 <div class="color-inputs">
                     <div>
@@ -437,7 +436,7 @@
         const inputNegocioZap = document.getElementById('input-negocio-zap');
         const inputNegocioSite = document.getElementById('input-negocio-site');
         const inputNegocioInsta = document.getElementById('input-negocio-insta');
-        const inputNegocioMapa = document.getElementById('input-negocio-mapa');
+        // inputNegocioMapa REMOVIDO
         const inputNegocioCta = document.getElementById('input-negocio-cta');
 
         // --- Seletores (Resultado) ---
@@ -571,7 +570,6 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    // --- CORREÇÃO DO LINK DO MAPA AQUI ---
                     const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
                     input.value = mapsLink;
                 },
@@ -628,7 +626,6 @@
             
             if (lat && long) {
                 vCardString.push(`GEO:${lat},${long}`);
-                // --- CORREÇÃO DO LINK DO MAPA AQUI ---
                 const mapsLink = `https://www.google.com/maps?q=${lat},${long}`;
                 vCardString.push(`NOTE:Ver no mapa: ${mapsLink}`);
             }
@@ -672,7 +669,7 @@
             const zap = inputNegocioZap.value;
             const site = inputNegocioSite.value;
             const insta = inputNegocioInsta.value;
-            const mapa = inputNegocioMapa.value;
+            // const mapa = inputNegocioMapa.value; // <-- REMOVIDO
             const cta = inputNegocioCta.value;
             
             if (!titulo) {
@@ -687,12 +684,11 @@
             if (zap) textoFormatado += `📱 WhatsApp: ${zap}\n`;
             if (site) textoFormatado += `🌐 Site: ${site}\n`;
             if (insta) textoFormatado += `📸 Instagram: ${insta}\n`;
-            if (mapa) textoFormatado += `📍 Localização: ${mapa}\n`;
+            // if (mapa) textoFormatado += `📍 Localização: ${mapa}\n`; // <-- REMOVIDO
             
             if (cta) textoFormatado += `\n${cta}`;
             
-            // --- A CORREÇÃO DO BUG ESTÁ AQUI ---
-            // Era 'textoFormatADO' e foi corrigido para 'textoFormatado'
+            // --- CORREÇÃO DO BUG 'textoFormatADO' ---
             gerarQRCode(textoFormatado, event); 
         });
 
@@ -770,3 +766,4 @@
     </script>
 </body>
 </html>
+
