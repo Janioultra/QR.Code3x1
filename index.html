@@ -553,7 +553,7 @@
                     height: 256,
                     colorDark: corPrincipal, 
                     colorLight: corFundo,   
-                    correctLevel: QRCode.CorrectLevel.M // <-- MUDANÇA: Alterado de H para M
+                    correctLevel: QRCode.CorrectLevel.M // Nível Médio
                 });
                 
                 btnLimpar.classList.remove('hidden');
@@ -563,7 +563,14 @@
                 resultadoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 console.error("Erro ao gerar QR Code:", error);
-                showModal("Ocorreu um erro ao gerar o QR Code. Verifique os dados inseridos (ex: texto muito longo).");
+                // MUDANÇA: Mostrar a mensagem de erro real
+                let userMessage = "Ocorreu um erro ao gerar o QR Code. ";
+                if (error.message.includes("code length overflow")) {
+                    userMessage += "Os dados inseridos são muito longos para este tipo de QR Code.";
+                } else {
+                    userMessage += `Detalhe: ${error.message}`;
+                }
+                showModal(userMessage);
             }
         }
 
@@ -775,9 +782,10 @@
             
             let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
             if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
-            if (zap) textoFormatado += `📱 WhatsApp: ${zap}\n`;
-            if (site) textoFormatado += `🌐 Site: ${site}\n`;
-            if (insta) textoFormatado += `📸 Instagram: ${insta}\n`;
+            // EMOJIS REMOVIDOS
+            if (zap) textoFormatado += `WhatsApp: ${zap}\n`;
+            if (site) textoFormatado += `Site: ${site}\n`;
+            if (insta) textoFormatado += `Instagram: ${insta}\n`;
             if (cta) textoFormatado += `\n${cta}`;
             
             gerarQRCode(textoFormatado, event); 
