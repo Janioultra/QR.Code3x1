@@ -225,6 +225,7 @@
         <h1>Gerador de QR Code</h1>
 
         <div class="geradores">
+            <!-- 1. URL -->
             <div class="box">
                 <h2>Site / URL</h2>
                 <input type="text" id="input-url" placeholder="https://seusite.com.br">
@@ -241,6 +242,7 @@
                 <button id="btn-url">Gerar QR Code</button>
             </div>
             
+            <!-- 2. Wi-Fi -->
             <div class="box">
                 <h2>Conexão Wi-Fi</h2>
                 <input type="text" id="input-wifi-ssid" placeholder="Nome da rede (SSID)">
@@ -258,6 +260,7 @@
                 <button id="btn-wifi">Gerar QR Code</button>
             </div>
             
+            <!-- 3. PIX -->
             <div class="box">
                 <h2>PIX (Gerador BR Code)</h2>
                 <input type="text" id="input-pix-key" placeholder="Sua Chave PIX (CPF, e-mail, etc)">
@@ -278,6 +281,7 @@
                 <button id="btn-pix">Gerar QR Code PIX</button>
             </div>
 
+            <!-- 4. vCard -->
             <div class="box">
                 <h2>Cartão de Visita (vCard)</h2>
                 <input type="text" id="input-vcard-nome" placeholder="Nome Completo">
@@ -302,6 +306,7 @@
                 <button id="btn-vcard">Gerar vCard</button>
             </div>
             
+            <!-- 5. WhatsApp -->
             <div class="box">
                 <h2>WhatsApp</h2>
                 <input type="tel" id="input-whatsapp-tel" placeholder="Nº (ex: 5575998312170)">
@@ -319,6 +324,7 @@
                 <button id="btn-whatsapp">Gerar Link Zap</button>
             </div>
             
+            <!-- 6. Localização (Mapas) -->
             <div class="box">
                 <h2>Localização (Google Maps)</h2>
                 <p class="text-sm text-slate-600 mb-2">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
@@ -337,6 +343,7 @@
                 <button id="btn-geo">Gerar Mapa</button>
             </div>
             
+            <!-- 7. Meu Negócio -->
             <div class="box">
                 <h2>Meu Negócio (Texto PRO)</h2>
                 <input type="text" id="input-negocio-titulo" placeholder="Empresa (Ex: INTERNET ULTRA FIBRA)">
@@ -684,6 +691,8 @@
             
             if (cta) textoFormatado += `\n${cta}`;
             
+            // --- A CORREÇÃO DO BUG ESTÁ AQUI ---
+            // Era 'textoFormatADO' e foi corrigido para 'textoFormatado'
             gerarQRCode(textoFormatado, event); 
         });
 
