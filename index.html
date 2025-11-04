@@ -437,7 +437,7 @@
         const inputPixAmount = document.getElementById('input-pix-amount');
         const inputPixTxid = document.getElementById('input-pix-txid');
         
-        // --- MUDANÇA AQUI: Seletores do vCard ---
+        // --- Seletores do vCard ---
         const btnVCard = document.getElementById('btn-vcard');
         const inputVCardNome = document.getElementById('input-vcard-nome');
         const inputVCardCargo = document.getElementById('input-vcard-cargo');
@@ -446,7 +446,7 @@
         const inputVCardSite = document.getElementById('input-vcard-site');
         const inputVCardNote = document.getElementById('input-vcard-note');
         const inputVCardMapLink = document.getElementById('input-vcard-maplink');
-        const btnVCardMapAuto = document.getElementById('btn-vcard-map-auto'); // Botão novo
+        const btnVCardMapAuto = document.getElementById('btn-vcard-map-auto'); 
         
         // --- Seletores (WhatsApp) ---
         const btnWhatsapp = document.getElementById('btn-whatsapp');
@@ -574,7 +574,7 @@
             }
         }
         
-        // --- MUDANÇA AQUI: Link do Mapa (Corrigido) ---
+        
         function obterGeolocalizacaoURL(idInputURL) {
             if (!checkSecureContext()) return;
             const input = document.getElementById(idInputURL);
@@ -583,8 +583,11 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    // CORRIGIDO: Adicionado o "s" no https
-                    const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    
+                    // --- CORREÇÃO FINAL ESTÁ AQUI ---
+                    // Removido o '{' e '}' que estavam quebrando o link
+                    const mapsLink = `https://www.google.com/maps?q=$${lat},${lon}`;
+                    
                     input.value = mapsLink;
                 },
                 (error) => {
@@ -684,14 +687,12 @@
             gerarQRCode(url, event);
         });
         
-        // --- MUDANÇA AQUI: Botoões GEO ---
+        // Botoões GEO
         btnMapasGeoAuto.addEventListener('click', () => {
-            // Este botão preenche o card "Localização"
             obterGeolocalizacaoURL('input-geo-url');
         });
         
         btnVCardMapAuto.addEventListener('click', () => {
-            // Este botão preenche o card "vCard"
             obterGeolocalizacaoURL('input-vcard-maplink');
         });
 
