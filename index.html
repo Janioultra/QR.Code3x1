@@ -586,7 +586,7 @@
                     
                     // --- CORREÇÃO FINAL ESTÁ AQUI ---
                     // Formato de link que funciona (com https e ?q=)
-                    const mapsLink = `http://googleusercontent.com/maps/google.com/18?q=${lat},${lon}`;
+                    const mapsLink = `https://www.google.com/maps?q=-12.8423974999999$?q=${lat},${lon}`;
                     
                     input.value = mapsLink;
                 },
@@ -622,25 +622,23 @@
         
         // --- MUDANÇA AQUI: vCard (Lógica do Nome Corrigida) ---
         btnVCard.addEventListener('click', (event) => { 
-            let nome = inputVCardNome.value; // Usar 'let' para poder modificar
+            let nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
             const empresa = inputVCardEmpresa.value;
-            const tel = inputVCardTel.value;
-            const site = inputVCardSite.value;
+            let tel = inputVCardTel.value; // Usar 'let'
+            let site = inputVCardSite.value; // Usar 'let'
             const note = inputVCardNote.value; 
-            const mapLink = inputVCardMapLink.value; 
+            let mapLink = inputVCardMapLink.value; // Usar 'let'
 
             // O vCard É OBRIGADO a ter um NOME (N: e FN:).
-            // Se o nome estiver vazio, vamos usar o Cargo ou a Empresa como "nome".
             if (!nome) {
                 if (cargo) {
                     nome = cargo;
                 } else if (empresa) {
                     nome = empresa;
                 } else {
-                    // Se tudo estiver vazio, o QR Code não será gerado.
                     alert("Por favor, preencha pelo menos um Nome, Cargo ou Empresa.");
-                    return; // Para a execução
+                    return; 
                 }
             }
 
@@ -656,19 +654,47 @@
             if (cargo) {
                 vCardString.push(`TITLE:${cargo}`);
             }
+
+            // --- LÓGICA INTELIGENTE (NOVA) ---
+            
+            // 1. Telefone
             if (tel) {
-                vCardString.push(`TEL;TYPE=WORK,VOICE:${tel}`);
+                const telLimpo = tel.replace(/[^\d+#]/g, ''); // Limpa
+                if (telLimpo.match(/[\d+#]/)) { // Se for um número
+                    vCardString.push(`TEL;TYPE=WORK,VOICE:${telLimpo}`);
+                } else { // Se for texto
+                    vCardString.push(`NOTE:Telefone (info): ${tel}`);
+                }
             }
+            
+            // Função helper
+            function isUrl(str) {
+                return str.toLowerCase().startsWith('http') || str.toLowerCase().startsWith('www.');
+            }
+
+            // 2. Site
             if (site) {
-                vCardString.push(`URL:${site}`);
+                if (isUrl(site)) { // Se for URL
+                    vCardString.push(`URL:${site.replace(/\s/g, '%20')}`);
+                } else { // Se for texto
+                    vCardString.push(`NOTE:Site (info): ${site}`);
+                }
             }
+            
+            // 3. Link do Mapa
             if (mapLink) {
-                // Adiciona o link do mapa como um segundo "URL"
-                vCardString.push(`URL:${mapLink}`);
+                 if (isUrl(mapLink)) { // Se for URL
+                    vCardString.push(`URL:${mapLink.replace(/\s/g, '%20')}`);
+                } else { // Se for texto
+                    vCardString.push(`NOTE:Endereço (info): ${mapLink}`);
+                }
             } 
+            
+            // 4. Observação
             if (note) {
                 vCardString.push(`NOTE:${note}`);
             }
+            // --- FIM DA LÓGICA ---
             
             vCardString.push('END:VCARD');
             
