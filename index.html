@@ -585,8 +585,8 @@
                     const lon = position.coords.longitude;
                     
                     // --- CORREÇÃO FINAL ESTÁ AQUI ---
-                    // Removido o '{' e '}' que estavam quebrando o link
-                    const mapsLink = `http://googleusercontent.com/maps/google.com/14${lat},${lon}`;
+                    // Formato de link que funciona (com https e ?q=)
+                    const mapsLink = `http://googleusercontent.com/maps/google.com/18?q=${lat},${lon}`;
                     
                     input.value = mapsLink;
                 },
@@ -620,15 +620,29 @@
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
-        // vCard (Corrigido)
+        // --- MUDANÇA AQUI: vCard (Lógica do Nome Corrigida) ---
         btnVCard.addEventListener('click', (event) => { 
-            const nome = inputVCardNome.value;
+            let nome = inputVCardNome.value; // Usar 'let' para poder modificar
             const cargo = inputVCardCargo.value;
             const empresa = inputVCardEmpresa.value;
             const tel = inputVCardTel.value;
             const site = inputVCardSite.value;
             const note = inputVCardNote.value; 
             const mapLink = inputVCardMapLink.value; 
+
+            // O vCard É OBRIGADO a ter um NOME (N: e FN:).
+            // Se o nome estiver vazio, vamos usar o Cargo ou a Empresa como "nome".
+            if (!nome) {
+                if (cargo) {
+                    nome = cargo;
+                } else if (empresa) {
+                    nome = empresa;
+                } else {
+                    // Se tudo estiver vazio, o QR Code não será gerado.
+                    alert("Por favor, preencha pelo menos um Nome, Cargo ou Empresa.");
+                    return; // Para a execução
+                }
+            }
 
             let vCardString = [
                 'BEGIN:VCARD', 'VERSION:3.0',
@@ -648,12 +662,10 @@
             if (site) {
                 vCardString.push(`URL:${site}`);
             }
-            // --- MUDANÇA AQUI ---
-            // Adiciona o link do mapa como um segundo "URL", que é mais estável
             if (mapLink) {
+                // Adiciona o link do mapa como um segundo "URL"
                 vCardString.push(`URL:${mapLink}`);
             } 
-            // Adiciona a nota (isso deve vir DEPOIS dos URLs para melhor compatibilidade)
             if (note) {
                 vCardString.push(`NOTE:${note}`);
             }
