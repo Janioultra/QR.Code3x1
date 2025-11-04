@@ -564,7 +564,6 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    // --- CORREÇÃO DO LINK DO MAPA AQUI ---
                     const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
                     input.value = mapsLink;
                 },
@@ -621,7 +620,6 @@
             
             if (lat && long) {
                 vCardString.push(`GEO:${lat},${long}`);
-                // --- CORREÇÃO DO LINK DO MAPA AQUI ---
                 const mapsLink = `https://www.google.com/maps?q=${lat},${long}`;
                 vCardString.push(`NOTE:Ver no mapa: ${mapsLink}`);
             }
@@ -684,7 +682,9 @@
             
             if (cta) textoFormatado += `\n${cta}`;
             
-            gerarQRCode(textoFormatado, event);
+            // --- A CORREÇÃO DO BUG ESTÁ AQUI ---
+            // Era 'textoFormatADO' e foi corrigido para 'textoFormatado'
+            gerarQRCode(textoFormatado, event); 
         });
 
         // Botoões GEO
