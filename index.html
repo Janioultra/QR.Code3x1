@@ -433,7 +433,7 @@
         const inputPixAmount = document.getElementById('input-pix-amount');
         const inputPixTxid = document.getElementById('input-pix-txid');
         
-        // --- Seletores do vCard (MODIFICADO) ---
+        // --- Seletores do vCard ---
         const btnVCard = document.getElementById('btn-vcard');
         const inputVCardNome = document.getElementById('input-vcard-nome');
         const inputVCardCargo = document.getElementById('input-vcard-cargo');
@@ -610,7 +610,7 @@
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
-        // --- MUDANÇA AQUI: Lógica do vCard (MODIFICADO) ---
+        // --- MUDANÇA AQUI: Lógica do vCard (SEM REGRAS) ---
         btnVCard.addEventListener('click', (event) => { 
             const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
@@ -620,11 +620,7 @@
             const note = inputVCardNote.value; 
             const mapLink = inputVCardMapLink.value; 
 
-            // REGRA REMOVIDA. Agora só checa se o nome existe.
-            if (!nome) {
-                alert('O campo "Nome Completo" é obrigatório.');
-                return;
-            }
+            // TODAS AS REGRAS E ALERTAS REMOVIDOS
             
             let vCardString = [
                 'BEGIN:VCARD', 'VERSION:3.0',
@@ -648,7 +644,7 @@
             gerarQRCode(vCardString.join('\n'), event);
         });
 
-        // WhatsApp
+        // --- MUDANÇA AQUI: WHATSAPP CORRIGIDO ---
         btnWhatsapp.addEventListener('click', (event) => { 
             let tel = inputWhatsappTel.value;
             let msg = inputWhatsappMsg.value;
@@ -660,6 +656,7 @@
             tel = tel.replace(/\D/g, '');
             const encodedMsg = encodeURIComponent(msg);
             
+            // CORRIGIDO: de 'https::/' para 'https://'
             const whatsappString = `https://wa.me/${tel}?text=${encodedMsg}`;
             gerarQRCode(whatsappString, event);
         });
@@ -733,7 +730,9 @@
 
             if (amount) {
                 const amountComPonto = amount.replace(",", "."); 
-                const valorFormatado = parseFloat(amountComPBRL).toFixed(2);
+                // --- MUDANÇA AQUI: PIX CORRIGIDO ---
+                // CORRIGIDO: de 'amountComPBRL' para 'amountComPonto'
+                const valorFormatado = parseFloat(amountComPonto).toFixed(2);
                 if (isNaN(valorFormatado) || valorFormatado <= 0) {
                     alert("Valor do PIX inválido.");
                     return;
