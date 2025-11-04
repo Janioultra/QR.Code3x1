@@ -128,8 +128,8 @@
         }
         
         input#input-geo-url {
-            background-color: #f1f5f9; 
-            color: #64748b; 
+            background-color: #fff; /* Alterado de f1f5f9 para branco */
+            color: #333; /* Alterado de 64748b para escuro */
             font-size: 0.9em;
         }
         
@@ -374,8 +374,10 @@
             <div class="box">
                 <button class="btn-delete-card" title="Excluir card">×</button>
                 <h2 contenteditable="true">Localização (Google Maps)</h2>
-                <p class="text-sm text-slate-600 mb-2">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
-                <input type="text" id="input-geo-url" placeholder="Link do Google Maps aparecerá aqui..." readonly class="w-full p-2 border border-slate-300 rounded-md">
+                <p class="text-sm text-slate-600 mb-2">Cole um link ou clique no botão para pegar sua localização atual.</p>
+                
+                <input type="text" id="input-geo-url" placeholder="Cole o link ou clique no botão 'Obter'" class="w-full p-2 border border-slate-300 rounded-md">
+                
                 <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Obter Localização (Google Maps)</button>
                 <div class="color-inputs">
                     <div>
@@ -610,7 +612,7 @@
             } else { alert("Por favor, digite pelo menos o nome da rede (SSID)."); }
         });
         
-        // --- MUDANÇA AQUI: Lógica do vCard (SEM REGRAS) ---
+        // vCard (Corrigido)
         btnVCard.addEventListener('click', (event) => { 
             const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
@@ -620,21 +622,27 @@
             const note = inputVCardNote.value; 
             const mapLink = inputVCardMapLink.value; 
 
-            // TODAS AS REGRAS E ALERTAS REMOVIDOS
-            
             let vCardString = [
                 'BEGIN:VCARD', 'VERSION:3.0',
-                `N:${nome}`, `FN:${nome}`, `ORG:${empresa}`, `TITLE:${cargo}`,
-                `TEL;TYPE=WORK,VOICE:${tel}`, 
-                `URL:${site}`
+                `N:${nome}`,
+                `FN:${nome}`
             ];
 
-            // Adiciona a observação
+            if (empresa) {
+                vCardString.push(`ORG:${empresa}`);
+            }
+            if (cargo) {
+                vCardString.push(`TITLE:${cargo}`);
+            }
+            if (tel) {
+                vCardString.push(`TEL;TYPE=WORK,VOICE:${tel}`);
+            }
+            if (site) {
+                vCardString.push(`URL:${site}`);
+            }
             if (note) {
                 vCardString.push(`NOTE:${note}`);
             }
-            
-            // Adiciona o link do mapa (colado) se existir
             if (mapLink) {
                 vCardString.push(`NOTE:ENDEREÇO: ${mapLink}`);
             } 
@@ -644,7 +652,7 @@
             gerarQRCode(vCardString.join('\n'), event);
         });
 
-        // --- MUDANÇA AQUI: WHATSAPP CORRIGIDO ---
+        // WhatsApp (Corrigido)
         btnWhatsapp.addEventListener('click', (event) => { 
             let tel = inputWhatsappTel.value;
             let msg = inputWhatsappMsg.value;
@@ -656,17 +664,17 @@
             tel = tel.replace(/\D/g, '');
             const encodedMsg = encodeURIComponent(msg);
             
-            // CORRIGIDO: de 'https::/' para 'https://'
             const whatsappString = `https://wa.me/${tel}?text=${encodedMsg}`;
             gerarQRCode(whatsappString, event);
         });
         
-        // Geolocalização
+        // Geolocalização (Corrigido)
         btnGeo.addEventListener('click', (event) => { 
             const url = inputGeoUrl.value;
             
             if (!url || url === "Obtendo..." || url === "Falha ao obter localização.") {
-                alert('Por favor, obtenha um link de localização válido primeiro.');
+                // Modificado para um alerta mais genérico
+                alert('Por favor, cole um link ou use o botão "Obter Localização".');
                 return;
             }
             gerarQRCode(url, event);
@@ -679,7 +687,7 @@
 
 
         /**
-         * Funções do PIX
+         * Funções do PIX (Corrigido)
          */
         function formatarEMV(id, value) {
             const length = ('00' + value.length).slice(-2);
@@ -730,8 +738,6 @@
 
             if (amount) {
                 const amountComPonto = amount.replace(",", "."); 
-                // --- MUDANÇA AQUI: PIX CORRIGIDO ---
-                // CORRIGIDO: de 'amountComPBRL' para 'amountComPonto'
                 const valorFormatado = parseFloat(amountComPonto).toFixed(2);
                 if (isNaN(valorFormatado) || valorFormatado <= 0) {
                     alert("Valor do PIX inválido.");
