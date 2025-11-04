@@ -586,7 +586,7 @@
                     
                     // --- CORREÇÃO FINAL ESTÁ AQUI ---
                     // Removido o '{' e '}' que estavam quebrando o link
-                    const mapsLink = `https://www.google.com/maps?q=$${lat},${lon}`;
+                    const mapsLink = `http://googleusercontent.com/maps/google.com/14${lat},${lon}`;
                     
                     input.value = mapsLink;
                 },
@@ -648,12 +648,15 @@
             if (site) {
                 vCardString.push(`URL:${site}`);
             }
+            // --- MUDANÇA AQUI ---
+            // Adiciona o link do mapa como um segundo "URL", que é mais estável
+            if (mapLink) {
+                vCardString.push(`URL:${mapLink}`);
+            } 
+            // Adiciona a nota (isso deve vir DEPOIS dos URLs para melhor compatibilidade)
             if (note) {
                 vCardString.push(`NOTE:${note}`);
             }
-            if (mapLink) {
-                vCardString.push(`NOTE:ENDEREÇO: ${mapLink}`);
-            } 
             
             vCardString.push('END:VCARD');
             
