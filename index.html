@@ -775,20 +775,33 @@
             const insta = inputNegocioInsta.value;
             const cta = inputNegocioCta.value;
             
-            if (!titulo) {
-                showModal('O Título da Empresa é obrigatório!'); // CORRIGIDO
-                return;
+            // CENÁRIO 1: O campo SITE está preenchido (prioridade).
+            // Gera um QR Code de URL (para iOS e Android abrirem o link).
+            if (site) {
+                if (!site.startsWith('http://') && !site.startsWith('https://')) {
+                    showModal('O campo Site parece inválido. Ele deve começar com https:// ou http://');
+                    return;
+                }
+                gerarQRCode(site, event); 
+            
+            // CENÁRIO 2: O campo SITE está VAZIO.
+            // Gera um QR Code de TEXTO (comportamento antigo do Android).
+            } else {
+                if (!titulo) {
+                    showModal('O campo Site está vazio. Para gerar um QR Code de texto, pelo menos o Título da Empresa é obrigatório!'); 
+                    return;
+                }
+                
+                let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
+                if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
+                // EMOJIS REMOVIDOS
+                if (zap) textoFormatado += `WhatsApp: ${zap}\n`;
+                // Site não é incluído pois está vazio
+                if (insta) textoFormatado += `Instagram: ${insta}\n`;
+                if (cta) textoFormatado += `\n${cta}`;
+                
+                gerarQRCode(textoFormatado, event); 
             }
-            
-            let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
-            if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
-            // EMOJIS REMOVIDOS
-            if (zap) textoFormatado += `WhatsApp: ${zap}\n`;
-            if (site) textoFormatado += `Site: ${site}\n`;
-            if (insta) textoFormatado += `Instagram: ${insta}\n`;
-            if (cta) textoFormatado += `\n${cta}`;
-            
-            gerarQRCode(textoFormatado, event); 
         });
 
         // Botoões GEO
@@ -885,4 +898,5 @@
     </script>
 </body>
 </html>
+
 
