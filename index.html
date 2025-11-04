@@ -340,9 +340,6 @@
 
                 <input type="text" id="input-vcard-maplink" placeholder="Cole o link do Google Maps aqui (Opcional)">
 
-                <input type="text" id="input-vcard-lat" placeholder="Latitude (autodetectar)">
-                <input type="text" id="input-vcard-long" placeholder="Longitude (autodetectar)">
-                <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização (Autodetectar)</button>
                 <div class="color-inputs">
                     <div>
                         <label>Cor:</label>
@@ -443,11 +440,8 @@
         const inputVCardEmpresa = document.getElementById('input-vcard-empresa');
         const inputVCardTel = document.getElementById('input-vcard-tel');
         const inputVCardSite = document.getElementById('input-vcard-site');
-        const inputVCardNote = document.getElementById('input-vcard-note'); // "Site 2" virou "Note"
-        const inputVCardMapLink = document.getElementById('input-vcard-maplink'); // Novo campo de link de mapa
-        const inputVCardLat = document.getElementById('input-vcard-lat');
-        const inputVCardLong = document.getElementById('input-vcard-long');
-        const btnVCardGeoAuto = document.getElementById('btn-vcard-geo-auto'); 
+        const inputVCardNote = document.getElementById('input-vcard-note');
+        const inputVCardMapLink = document.getElementById('input-vcard-maplink');
         
         // --- Seletores (WhatsApp) ---
         const btnWhatsapp = document.getElementById('btn-whatsapp');
@@ -574,17 +568,9 @@
                     break;
             }
         }
-        function obterGeolocalizacaoLatLng(idLat, idLong) {
-            if (!checkSecureContext()) return;
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    document.getElementById(idLat).value = position.coords.latitude.toFixed(6);
-                    document.getElementById(idLong).value = position.coords.longitude.toFixed(6);
-                },
-                handleGeoError
-            );
-        }
         
+        // MUDANÇA: Função 'obterGeolocalizacaoLatLng' removida por não ser mais usada.
+
         function obterGeolocalizacaoURL(idInputURL) {
             if (!checkSecureContext()) return;
             const input = document.getElementById(idInputURL);
@@ -633,10 +619,8 @@
             const empresa = inputVCardEmpresa.value;
             const tel = inputVCardTel.value;
             const site = inputVCardSite.value;
-            const note = inputVCardNote.value; // Pegando o valor da Observação
-            const mapLink = inputVCardMapLink.value; // Pegando o link do mapa colado
-            const lat = inputVCardLat.value.replace(',', '.'); 
-            const long = inputVCardLong.value.replace(',', '.'); 
+            const note = inputVCardNote.value; 
+            const mapLink = inputVCardMapLink.value; 
 
             if (!nome || (!tel && !site)) {
                 alert('Nome e pelo menos um Telefone ou Site são obrigatórios!');
@@ -650,26 +634,15 @@
                 `URL:${site}`
             ];
 
-            // Adiciona a observação (Ex: "VEJA OS PLANOS")
+            // Adiciona a observação
             if (note) {
                 vCardString.push(`NOTE:${note}`);
             }
             
-            // --- LÓGICA DE LOCALIZAÇÃO ATUALIZADA ---
-            
-            // 1. Prioriza o link colado
+            // Adiciona o link do mapa (colado) se existir
             if (mapLink) {
-                // Adiciona o link do mapa com o prefixo "ENDEREÇO:"
                 vCardString.push(`NOTE:ENDEREÇO: ${mapLink}`);
             } 
-            // 2. Se não tiver link colado, usa o autodetectar
-            else if (lat && long) {
-                const autoMapsLink = `http://googleusercontent.com/maps/google.com/0{lat},${long}`;
-                // Adiciona o link do mapa com o prefixo "ENDEREÇO:"
-                vCardString.push(`NOTE:ENDEREÇO: ${autoMapsLink}`);
-            }
-            
-            // O campo "GEO:" (que mostrava os números soltos) foi REMOVIDO
             
             vCardString.push('END:VCARD');
             
@@ -688,7 +661,7 @@
             tel = tel.replace(/\D/g, '');
             const encodedMsg = encodeURIComponent(msg);
             
-            const whatsappString = `https://wa.me/${tel}?text=${encodedMsg}`;
+            const whatsappString = `https::/wa.me/${tel}?text=${encodedMsg}`;
             gerarQRCode(whatsappString, event);
         });
         
@@ -703,10 +676,7 @@
             gerarQRCode(url, event);
         });
         
-        // Botoões GEO
-        btnVCardGeoAuto.addEventListener('click', () => {
-            obterGeolocalizacaoLatLng('input-vcard-lat', 'input-vcard-long');
-        });
+        // Botoões GEO (Removido o listener do btnVCardGeoAuto)
         btnMapasGeoAuto.addEventListener('click', () => {
             obterGeolocalizacaoURL('input-geo-url');
         });
