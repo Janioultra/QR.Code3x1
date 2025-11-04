@@ -771,34 +771,21 @@
             const titulo = inputNegocioTitulo.value;
             const slogan = inputNegocioSlogan.value;
             const zap = inputNegocioZap.value;
-            let site = inputNegocioSite.value; // MUDANÇA: de 'const' para 'let'
-            let insta = inputNegocioInsta.value; // MUDANÇA: de 'const' para 'let'
+            const site = inputNegocioSite.value;
+            const insta = inputNegocioInsta.value;
             const cta = inputNegocioCta.value;
             
-            // LÓGICA REVERTIDA: Agora sempre gera texto
-            
             if (!titulo) {
-                showModal('O Título da Empresa é obrigatório!'); 
+                showModal('O Título da Empresa é obrigatório!'); // CORRIGIDO
                 return;
-            }
-
-            // NOVO: "Disfarça" as URLs para o iOS não as detectar automaticamente
-            // 1. Remove http
-            // 2. Adiciona um espaço de largura zero (invisível - \u200B) depois de cada ponto para "quebrar" a detecção de link do iOS.
-            if (site) {
-                site = site.replace('https://', '').replace('http://', '');
-                site = site.replace(/\./g, '.\u200B'); // Adiciona espaço invisível
-            }
-            if (insta) {
-                insta = insta.replace('https://', '').replace('http://', '');
-                insta = insta.replace(/\./g, '.\u200B'); // Adiciona espaço invisível
             }
             
             let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
             if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
+            // EMOJIS REMOVIDOS
             if (zap) textoFormatado += `WhatsApp: ${zap}\n`;
-            if (site) textoFormatado += `Site: ${site}\n`; // Adiciona a URL "disfarçada"
-            if (insta) textoFormatado += `Instagram: ${insta}\n`; // Adiciona a URL "disfarçada"
+            if (site) textoFormatado += `Site: ${site}\n`;
+            if (insta) textoFormatado += `Instagram: ${insta}\n`;
             if (cta) textoFormatado += `\n${cta}`;
             
             gerarQRCode(textoFormatado, event); 
@@ -898,3 +885,4 @@
     </script>
 </body>
 </html>
+
