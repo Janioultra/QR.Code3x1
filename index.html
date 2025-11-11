@@ -203,6 +203,13 @@
             display: none;
         }
         
+        .box p.info {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
         /* --- ESTILOS DO MODAL DE AVISO --- */
         #modal-aviso {
             position: fixed;
@@ -247,14 +254,55 @@
         /* --- FIM DOS ESTILOS DO MODAL --- */
 
 
+        /* * ==============================================================
+         * AQUI ESTÁ A CORREÇÃO PARA IMPRESSÃO (VERSÃO FINAL)
+         * ==============================================================
+         */
         @media print {
-            body { background-color: #fff; padding: 0; }
-            .container, footer, #modal-aviso { display: none; }
-            .container > *:not(.resultado) { display: none; }
-            .resultado { display: block; }
-            .resultado h2, .botoes-resultado, .color-inputs { display: none; }
-            #qrcode { border: none; box-shadow: none; margin: 0; padding: 0; }
+            /* 1. Esconde TUDO da página por padrão */
+            body * {
+                visibility: hidden;
+            }
+
+            /* 2. Torna visível APENAS o container do QR code e o que está dentro dele */
+            #qrcode, #qrcode * {
+                visibility: visible;
+            }
+
+            /* 3. Posiciona o container do QR code no centro da página de impressão */
+            #qrcode {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                margin: 0; 
+            }
+
+            /* 4. CORREÇÃO IMPORTANTE: Mostra APENAS o <canvas> */
+            #qrcode canvas {
+                display: block !important;
+                visibility: visible !important;
+                max-width: 90vmin; 
+                max-height: 90vmin;
+                width: auto;
+                height: auto;
+            }
+            
+            /* 5. CORREÇÃO IMPORTANTE: Esconde qualquer <img> fallback */
+            #qrcode img {
+                display: none !important; 
+                visibility: hidden !important;
+            }
         }
+        /* --- FIM DA CORREÇÃO DE IMPRESSÃO --- */
+
 
         footer {
             text-align: center;
@@ -294,6 +342,8 @@
                 <h2>Conexão Wi-Fi</h2>
                 <input type="text" id="input-wifi-ssid" placeholder="Nome da rede (SSID)">
                 <input type="password" id="input-wifi-pass" placeholder="Senha da rede">
+                <!-- CAMPO DE MAPS ADICIONADO -->
+                <input type="text" class="input-location-link" placeholder="Link do Google Maps (opcional)">
                 <div class="color-inputs">
                     <div>
                         <label>Cor:</label>
@@ -307,7 +357,7 @@
                 <button id="btn-wifi">Gerar QR Code</button>
             </div>
             
-            <!-- 3. PIX -->
+            <!-- 3. PIX (Sem campo de mapa, pois quebraria o BRCode) -->
             <div class="box">
                 <h2>PIX (Gerador BR Code)</h2>
                 <input type="text" id="input-pix-key" placeholder="Sua Chave PIX (CPF, e-mail, etc)">
@@ -337,9 +387,11 @@
                 <input type="tel" id="input-vcard-tel" placeholder="Telefone (ex: +55 75 9...)">
                 <input type="email" id="input-vcard-email" placeholder="E-mail">
                 <input type="text" id="input-vcard-site" placeholder="Site (ex: https://...)">
+                <!-- CAMPO DE MAPS ADICIONADO -->
+                <input type="text" class="input-location-link" placeholder="Link do Google Maps (opcional)">
                 <input type="text" id="input-vcard-lat" placeholder="Latitude (opcional)">
                 <input type="text" id="input-vcard-long" placeholder="Longitude (opcional)">
-                <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização</button>
+                <button type="button" id="btn-vcard-geo-auto" class="btn-geo-auto">📍 Usar minha localização (Lat/Long)</button>
                 <div class="color-inputs">
                     <div>
                         <label>Cor:</label>
@@ -358,6 +410,8 @@
                 <h2>WhatsApp</h2>
                 <input type="tel" id="input-whatsapp-tel" placeholder="Nº (ex: 5575998312170)">
                 <textarea id="input-whatsapp-msg" placeholder="Mensagem padrão (opcional)"></textarea>
+                <!-- CAMPO DE MAPS ADICIONADO -->
+                <input type="text" class="input-location-link" placeholder="Link do Google Maps (opcional)">
                 <div class="color-inputs">
                     <div>
                         <label>Cor:</label>
@@ -374,7 +428,7 @@
             <!-- 6. Localização (Mapas) -->
             <div class="box">
                 <h2>Localização (Google Maps)</h2>
-                <p style="font-size: 0.9em; color: #555; margin-top: 0; margin-bottom: 10px;">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
+                <p class="info">Clique no botão para pegar sua localização atual e gerar um link do Google Maps.</p>
                 <input type="text" id="input-geo-url" placeholder="Link do Google Maps aparecerá aqui..." readonly>
                 <button type="button" id="btn-mapas-geo-auto" class="btn-geo-auto">📍 Obter Localização (Google Maps)</button>
                 <div class="color-inputs">
@@ -390,7 +444,7 @@
                 <button id="btn-geo">Gerar Mapa</button>
             </div>
             
-            <!-- 7. Meu Negócio (COM O CAMPO DO MAPA REMOVIDO) -->
+            <!-- 7. Meu Negócio -->
             <div class="box">
                 <h2>Meu Negócio (Texto PRO)</h2>
                 <input type="text" id="input-negocio-titulo" placeholder="Empresa (Ex: INTERNET ULTRA FIBRA)">
@@ -398,6 +452,8 @@
                 <input type="tel" id="input-negocio-zap" placeholder="WhatsApp (Ex: 75998312170)">
                 <input type="text" id="input-negocio-site" placeholder="Site (https://...)">
                 <input type="text" id="input-negocio-insta" placeholder="Instagram (https://...)">
+                <!-- CAMPO DE MAPS ADICIONADO -->
+                <input type="text" class="input-location-link" placeholder="Link do Google Maps (opcional)">
                 <textarea id="input-negocio-cta" placeholder="Chamada (Ex: CLICK NO SITE...)"></textarea>
                 <div class="color-inputs">
                     <div>
@@ -410,6 +466,24 @@
                     </div>
                 </div>
                 <button id="btn-negocio">Gerar Anúncio</button>
+            </div>
+
+            <!-- 8. Imagem (URL) -->
+            <div class="box">
+                <h2>QR Code de Imagem (Link)</h2>
+                <p class="info">Cole o link (URL) de uma imagem que já esteja na internet.</p>
+                <input type="text" id="input-image-url" placeholder="https://.../imagem.png">
+                <div class="color-inputs">
+                    <div>
+                        <label>Cor:</label>
+                        <input type="color" class="color-dark-input" value="#000000">
+                    </div>
+                    <div>
+                        <label>Fundo:</label>
+                        <input type="color" class="color-light-input" value="#ffffff">
+                    </div>
+                </div>
+                <button id="btn-image-url">Gerar Link de Imagem</button>
             </div>
 
         </div> 
@@ -499,6 +573,10 @@
         const inputNegocioInsta = document.getElementById('input-negocio-insta');
         const inputNegocioCta = document.getElementById('input-negocio-cta');
 
+        // --- Seletores (Imagem URL) ---
+        const btnImageUrl = document.getElementById('btn-image-url');
+        const inputImageUrl = document.getElementById('input-image-url');
+
         // --- Seletores (Resultado) ---
         const btnLimpar = document.getElementById('btn-limpar');
         const btnDownload = document.getElementById('btn-download');
@@ -516,7 +594,6 @@
 
         btnModalFechar.addEventListener('click', closeModal);
         modalAviso.addEventListener('click', (event) => {
-            // Fecha se clicar fora do conteúdo
             if (event.target === modalAviso) {
                 closeModal();
             }
@@ -552,7 +629,7 @@
                     width: 256,
                     height: 256,
                     colorDark: corPrincipal, 
-                    colorLight: corFundo,   
+                    colorLight: corFundo,  
                     correctLevel: QRCode.CorrectLevel.M // Nível Médio
                 });
                 
@@ -563,7 +640,6 @@
                 resultadoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 console.error("Erro ao gerar QR Code:", error);
-                // MUDANÇA: Mostrar a mensagem de erro real
                 let userMessage = "Ocorreu um erro ao gerar o QR Code. ";
                 if (error.message.includes("code length overflow")) {
                     userMessage += "Os dados inseridos são muito longos para este tipo de QR Code.";
@@ -575,11 +651,12 @@
         }
 
         /**
-         * Função de Limpeza
+         * Função de Limpeza (COM CORREÇÃO)
          */
         function limparQRCode(resetColors = true) {
             if (qrcode) {
                 qrcode.clear();
+                qrcode = null; 
             }
             qrContainer.innerHTML = ''; 
             
@@ -608,7 +685,7 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const canvas = document.querySelector('#qrcode canvas');
             if (!canvas) {
-                showModal('Erro: Canvas do QR Code não encontrado.'); // CORRIGIDO
+                showModal('Erro: Canvas do QR Code não encontrado.'); 
                 return;
             }
             const imgURL = canvas.toDataURL('image/png');
@@ -629,11 +706,11 @@
         // --- FUNÇÕES DE GEOLOCALIZAÇÃO ---
         function checkSecureContext() {
             if (window.location.protocol !== 'https:') {
-                showModal('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).'); // CORRIGIDO
+                showModal('Este recurso só funciona em sites seguros (https).\n\nFunciona no link do GitHub Pages, mas não no arquivo local (C:\\...).'); 
                 return false;
             }
             if (!navigator.geolocation) {
-                showModal('Geolocalização não é suportada pelo seu navegador.'); // CORRIGIDO
+                showModal('Geolocalização não é suportada pelo seu navegador.'); 
                 return false;
             }
             return true;
@@ -651,7 +728,7 @@
                     message = 'Pedido de localização expirou.';
                     break;
             }
-            showModal(message); // CORRIGIDO
+            showModal(message); 
         }
         function obterGeolocalizacaoLatLng(idLat, idLong) {
             if (!checkSecureContext()) return;
@@ -691,23 +768,29 @@
         // URL
         btnUrl.addEventListener('click', (event) => { 
             const url = inputUrl.value;
-            if (url) { gerarQRCode(url, event); } else { showModal("Por favor, digite uma URL."); } // CORRIGIDO
+            if (url) { gerarQRCode(url, event); } else { showModal("Por favor, digite uma URL."); } 
         });
 
-        // Wi-Fi
+        // Wi-Fi (ATUALIZADO)
         btnWifi.addEventListener('click', (event) => { 
             const ssid = inputWifiSsid.value;
             const pass = inputWifiPass.value;
+            const mapLink = event.target.closest('.box').querySelector('.input-location-link').value; // Pega o link
+
             if (ssid) {
-                const wifiString = `WIFI:T:WPA;S:${ssid};P:${pass};;`;
+                let wifiString = `WIFI:T:WPA;S:${ssid};P:${pass};;`;
+                if (mapLink) {
+                    wifiString += `\n\nLocalização: ${mapLink}`; // Adiciona o link ao texto
+                }
                 gerarQRCode(wifiString, event);
             } else { 
-                showModal("Por favor, digite pelo menos o nome da rede (SSID)."); // CORRIGIDO
+                showModal("Por favor, digite pelo menos o nome da rede (SSID)."); 
             }
         });
         
-        // vCard
+        // vCard (ATUALIZADO)
         btnVCard.addEventListener('click', (event) => { 
+            const box = event.target.closest('.box');
             const nome = inputVCardNome.value;
             const cargo = inputVCardCargo.value;
             const empresa = inputVCardEmpresa.value;
@@ -716,9 +799,10 @@
             const site = inputVCardSite.value;
             const lat = inputVCardLat.value.replace(',', '.'); 
             const long = inputVCardLong.value.replace(',', '.'); 
+            const mapLink = box.querySelector('.input-location-link').value; // Pega o link
 
             if (!nome || (!tel && !email)) {
-                showModal('Nome e pelo menos um Telefone ou E-mail são obrigatórios!'); // CORRIGIDO
+                showModal('Nome e pelo menos um Telefone ou E-mail são obrigatórios!'); 
                 return;
             }
             
@@ -728,10 +812,14 @@
                 `TEL;TYPE=WORK,VOICE:${tel}`, `EMAIL:${email}`, `URL:${site}`
             ];
             
+            // Adiciona GEO (para apps de contacto)
             if (lat && long) {
                 vCardString.push(`GEO:${lat},${long}`);
-                const mapsLink = `https://www.google.com/maps?q=${lat},${long}`;
-                vCardString.push(`NOTE:Ver no mapa: ${mapsLink}`);
+            }
+            
+            // Adiciona o link do Google Maps na NOTA (para humanos)
+            if (mapLink) {
+                vCardString.push(`NOTE:Localização: ${mapLink}`);
             }
             
             vCardString.push('END:VCARD');
@@ -739,20 +827,28 @@
             gerarQRCode(vCardString.join('\n'), event);
         });
 
-        // WhatsApp
+        // WhatsApp (ATUALIZADO)
         btnWhatsapp.addEventListener('click', (event) => { 
             let tel = inputWhatsappTel.value;
             let msg = inputWhatsappMsg.value;
+            const mapLink = event.target.closest('.box').querySelector('.input-location-link').value; // Pega o link
 
             if (!tel) {
-                showModal('O número de telefone é obrigatório!'); // CORRIGIDO
+                showModal('O número de telefone é obrigatório!'); 
                 return;
             }
             tel = tel.replace(/\D/g, '');
             const encodedMsg = encodeURIComponent(msg);
             
             const whatsappString = `https://wa.me/${tel}?text=${encodedMsg}`;
-            gerarQRCode(whatsappString, event);
+            
+            // Adiciona o link do mapa ao texto do QR (não à mensagem do WhatsApp, mas ao QR)
+            let qrText = whatsappString;
+            if (mapLink) {
+                qrText += `\n\nLocalização: ${mapLink}`;
+            }
+            
+            gerarQRCode(qrText, event);
         });
         
         // Geolocalização
@@ -760,35 +856,51 @@
             const url = inputGeoUrl.value;
             
             if (!url || url === "Obtendo..." || url === "Falha ao obter localização.") {
-                showModal('Por favor, obtenha um link de localização válido primeiro.'); // CORRIGIDO
+                showModal('Por favor, obtenha um link de localização válido primeiro.'); 
                 return;
             }
             gerarQRCode(url, event);
         });
         
-        // --- Event Listener (Meu Negócio) ---
+        // --- Event Listener (Meu Negócio) (ATUALIZADO) ---
         btnNegocio.addEventListener('click', (event) => {
+            const box = event.target.closest('.box');
             const titulo = inputNegocioTitulo.value;
             const slogan = inputNegocioSlogan.value;
             const zap = inputNegocioZap.value;
             const site = inputNegocioSite.value;
             const insta = inputNegocioInsta.value;
+            const mapLink = box.querySelector('.input-location-link').value; // Pega o link
             const cta = inputNegocioCta.value;
             
             if (!titulo) {
-                showModal('O Título da Empresa é obrigatório!'); // CORRIGIDO
+                showModal('O Título da Empresa é obrigatório!'); 
                 return;
             }
             
             let textoFormatado = `=== ${titulo.toUpperCase()} ===\n`;
             if (slogan) textoFormatado += `_ ${slogan} _\n\n`;
-            // EMOJIS REMOVIDOS
+            
             if (zap) textoFormatado += `WhatsApp: ${zap}\n`;
             if (site) textoFormatado += `Site: ${site}\n`;
             if (insta) textoFormatado += `Instagram: ${insta}\n`;
+            if (mapLink) {
+                textoFormatado += `Local: ${mapLink}\n`; // Adiciona o link
+            }
+            
             if (cta) textoFormatado += `\n${cta}`;
             
             gerarQRCode(textoFormatado, event); 
+        });
+
+        // --- Event Listener (Imagem URL) ---
+        btnImageUrl.addEventListener('click', (event) => {
+            const url = inputImageUrl.value;
+            if (url) {
+                gerarQRCode(url, event);
+            } else {
+                showModal("Por favor, cole o link (URL) da imagem.");
+            }
         });
 
         // Botoões GEO
@@ -809,7 +921,7 @@
         }
         function simplificarTexto(text) {
             if (!text) return '';
-            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s.-]/g, ''); // Mantém pontos e hífens para valores
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s.-]/g, ''); 
         }
         function crc16(data) {
             let crc = 0xFFFF;
@@ -830,11 +942,10 @@
             let txid = inputPixTxid.value;
 
             if (!key || !name || !city) {
-                showModal("Chave PIX, Nome e Cidade são obrigatórios!"); // CORRIGIDO
+                showModal("Chave PIX, Nome e Cidade são obrigatórios!"); 
                 return;
             }
             
-            // Limpa e formata dados
             name = simplificarTexto(name).substring(0, 25);
             city = simplificarTexto(city).substring(0, 15);
             txid = txid ? simplificarTexto(txid).replace(/\s/g, '').substring(0, 25) : '***';
@@ -848,8 +959,8 @@
             let brCode = [
                 formatarEMV('00', '01'),
                 formatarEMV('26', merchantAccountInfo),
-                formatarEMV('52', '0000'), // Merchant Category Code (0000 = Não especificado)
-                formatarEMV('53', '986')  // Currency Code (986 = BRL)
+                formatarEMV('52', '0000'), 
+                formatarEMV('53', '986') 
             ];
 
             if (amount) {
@@ -864,16 +975,14 @@
                 brCode.push(formatarEMV('54', valorFormatado));
             }
 
-            brCode.push(formatarEMV('58', 'BR')); // Country Code
-            brCode.push(formatarEMV('59', name)); // Merchant Name
-            brCode.push(formatarEMV('60', city)); // Merchant City
+            brCode.push(formatarEMV('58', 'BR')); 
+            brCode.push(formatarEMV('59', name)); 
+            brCode.push(formatarEMV('60', city)); 
 
-            // Additional Data Field (TXID)
             const additionalData = formatarEMV('05', txid);
             brCode.push(formatarEMV('62', additionalData));
             
-            // CRC16
-            brCode.push('6304'); // ID do CRC
+            brCode.push('6304'); 
             
             let stringPIX = brCode.join('');
             const checksum = crc16(stringPIX);
@@ -885,4 +994,3 @@
     </script>
 </body>
 </html>
-
