@@ -357,26 +357,119 @@
                 <button id="btn-wifi">Gerar QR Code</button>
             </div>
             
-            <!-- 3. PIX (Sem campo de mapa, pois quebraria o BRCode) -->
-            <div class="box">
-                <h2>PIX (Gerador BR Code)</h2>
-                <input type="text" id="input-pix-key" placeholder="Sua Chave PIX (CPF, e-mail, etc)">
-                <input type="text" id="input-pix-name" placeholder="Seu Nome (até 25 chars)">
-                <input type="text" id="input-pix-city" placeholder="Sua Cidade (até 15 chars)">
-                <input type="text" id="input-pix-amount" placeholder="Valor (Ex: 10,50) (opcional)">
-                <input type="text" id="input-pix-txid" placeholder="ID da Transação (opcional)">
-                <div class="color-inputs">
-                    <div>
-                        <label>Cor:</label>
-                        <input type="color" class="color-dark-input" value="#000000">
-                    </div>
-                    <div>
-                        <label>Fundo:</label>
-                        <input type="color" class="color-light-input" value="#ffffff">
-                    </div>
-                </div>
-                <button id="btn-pix">Gerar QR Code PIX</button>
-            </div>
+            <!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de QR Code PIX (Simplificado)</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .box { border: 1px solid #ccc; padding: 20px; border-radius: 5px; max-width: 400px; }
+        input, button { width: 100%; padding: 10px; margin: 5px 0; }
+        button { background-color: #007BFF; color: white; border: none; cursor: pointer; }
+        #qrcode-pix { margin: 20px auto; text-align: center; }
+        #pix-payload { width: 100%; height: 100px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>PIX (Gerador BR Code Simplificado)</h2>
+        <input type="text" id="input-pix-key" placeholder="Sua Chave PIX (CPF, e-mail, telefone, etc)" value="75998312170">
+        <input type="text" id="input-pix-name" placeholder="Seu Nome (até 25 chars)" value="Janio Carlos">
+        <div>
+            <label>Cor do QR:</label>
+            <input type="color" id="color-dark" value="#000000">
+            <label>Fundo:</label>
+            <input type="color" id="color-light" value="#ffffff">
+        </div>
+        <button id="btn-pix">Gerar QR Code PIX</button>
+        <div id="qrcode-pix"></div>
+        <textarea id="pix-payload" placeholder="Payload gerado (para depuração)"></textarea>
+    </div>
+
+    <script>
+        // Função para calcular CRC16 (padrão CCITT-FALSE, polinômio 0x1021)
+        function calculateCRC16(data) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < data.length; i++) {
+                crc ^= data.charCodeAt(i);
+                for (let j = 0; j < 8; j++) {
+                    if (crc & 0x0001) {
+                        crc >>= 1;
+                        crc ^= 0xA001; // Polinômio 0x1021 (reverso)
+                    } else {
+                        crc >>= 1;
+                    }
+                }
+            }
+            return crc;
+        }
+
+        // Função para gerar o payload do BR Code PIX (apenas chave e nome)
+        function generatePIXPayload(pixKey, name) {
+            let payload = '';
+
+            // 00 - Payload Format Indicator (Fixo: 01)
+            payload += '000201';
+
+            // 01 - Point of Initiation Method (Fixo: 12 = Static)
+            payload += '010212';
+
+            // 26 - Merchant Account Information (PIX)
+            const merchantAccount = `BR.GOV.BCB.PIX01${String(pixKey.length).padStart(2, '0')}${pixKey}`;
+            payload += `26${String(merchantAccount.length).padStart(2, '0')}${merchantAccount}`;
+
+            // 52 - Merchant Category Code (Fixo: 0000)
+            payload += '52040000';
+
+            // 53 - Transaction Currency (Fixo: 986 = BRL)
+            payload += '5303986';
+
+            // 59 - Merchant Name (Opcional)
+            if (name) {
+                payload += `59${String(name.length).padStart(2, '0')}${name}`;
+            }
+
+            // 63 - CRC (Obrigatório)
+            const crc = calculateCRC16(payload);
+            const crcHex = crc.toString(16).toUpperCase().padStart(4, '0');
+            payload += `6304${crcHex}`;
+
+            return payload;
+        }
+
+        // Gerar QR Code
+        document.getElementById('btn-pix').addEventListener('click', function() {
+            const pixKey = document.getElementById('input-pix-key').value.trim();
+            const pixName = document.getElementById('input-pix-name').value.trim();
+            const colorDark = document.getElementById('color-dark').value;
+            const colorLight = document.getElementById('color-light').value;
+
+            if (!pixKey) {
+                alert("Por favor, insira sua Chave PIX!");
+                return;
+            }
+
+            // Gera o payload
+            const payload = generatePIXPayload(pixKey, pixName);
+            document.getElementById('pix-payload').value = payload;
+
+            // Limpa o QR Code anterior
+            document.getElementById('qrcode-pix').innerHTML = '';
+
+            // Gera o QR Code
+            new QRCode(document.getElementById('qrcode-pix'), {
+                text: payload,
+                width: 200,
+                height: 200,
+                colorDark: colorDark,
+                colorLight: colorLight,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+    </script>
+</body>
+</html>
 
             <!-- 4. vCard -->
             <div class="box">
@@ -405,25 +498,51 @@
                 <button id="btn-vcard">Gerar vCard</button>
             </div>
             
-            <!-- 5. WhatsApp -->
-            <div class="box">
-                <h2>WhatsApp</h2>
-                <input type="tel" id="input-whatsapp-tel" placeholder="Nº (ex: 5575998312170)">
-                <textarea id="input-whatsapp-msg" placeholder="Mensagem padrão (opcional)"></textarea>
-                <!-- CAMPO DE MAPS ADICIONADO -->
-                <input type="" class="input-location-link" placeholder="">
-                <div class="color-inputs">
-                    <div>
-                        <label>Cor:</label>
-                        <input type="color" class="color-dark-input" value="#000000">
-                    </div>
-                    <div>
-                        <label>Fundo:</label>
-                        <input type="color" class="color-light-input" value="#ffffff">
-                    </div>
-                </div>
-                <button id="btn-whatsapp">Gerar Link Zap</button>
-            </div>
+            <!-- 5. QR Code para Áudio (Google Drive) -->
+<div class="box">
+    <h2>usar o Google Drive para abrir um áudio salvo, mas é preciso configurar o link corretamente para que o QR Code funcione direto no navegador ou em apps de música.</h2>
+    <input type="text" id="input-audio-link" placeholder="Link direto do Google Drive (ex: https://drive.google.com/uc?export=download&id=...)">
+    <div class="color-inputs">
+        <div>
+            <label>Cor do QR:</label>
+            <input type="color" class="color-dark-input" value="#000000">
+        </div>
+        <div>
+            <label>Fundo:</label>
+            <input type="color" class="color-light-input" value="#ffffff">
+        </div>
+    </div>
+    <button id="btn-generate-qr">Gerar QR Code</button>
+    <div id="qrcode-audio" style="margin-top: 20px;"></div>
+</div>
+
+<!-- Adicione este script no final do body ou em um arquivo JS -->
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script>
+    document.getElementById('btn-generate-qr').addEventListener('click', function() {
+        const audioLink = document.getElementById('input-audio-link').value;
+        const colorDark = document.querySelector('.color-dark-input').value;
+        const colorLight = document.querySelector('.color-light-input').value;
+
+        if (!audioLink) {
+            alert("Por favor, insira o link direto do áudio do Google Drive!");
+            return;
+        }
+
+        // Limpa o QR Code anterior
+        document.getElementById('qrcode-audio').innerHTML = '';
+
+        // Gera o novo QR Code
+        new QRCode(document.getElementById('qrcode-audio'), {
+            text: audioLink,
+            width: 200,
+            height: 200,
+            colorDark: colorDark,
+            colorLight: colorLight,
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    });
+</script>
             
             <!-- 6. Localização (Mapas) -->
             <div class="box">
