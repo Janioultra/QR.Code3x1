@@ -886,16 +886,18 @@
         });
 
         /**
-         * Funções do PIX
+         * Funções do PIX (CORRIGIDO)
          */
         function formatarEMV(id, value) {
             const length = ('00' + value.length).slice(-2);
             return `${id}${length}${value}`;
         }
+
         function simplificarTexto(text) {
             if (!text) return '';
             return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s.-]/g, '');
         }
+
         function crc16(data) {
             let crc = 0xFFFF;
             for (let i = 0; i < data.length; i++) {
@@ -908,59 +910,76 @@
         }
 
         btnPix.addEventListener('click', (event) => {
-            const key = inputPixKey.value;
-            let name = inputPixName.value;
-            let city = inputPixCity.value;
-            let amount = inputPixAmount.value;
-            let txid = inputPixTxid.value;
+            const key = inputPixKey.value.trim();
+            let name = inputPixName.value.trim();
+            let city = inputPixCity.value.trim();
+            let amount = inputPixAmount.value.trim();
+            let txid = inputPixTxid.value.trim();
 
+            // Validações
             if (!key || !name || !city) {
                 showModal("Chave PIX, Nome e Cidade são obrigatórios!");
                 return;
             }
 
+            // Limita o tamanho dos campos
             name = simplificarTexto(name).substring(0, 25);
             city = simplificarTexto(city).substring(0, 15);
             txid = txid ? simplificarTexto(txid).replace(/\s/g, '').substring(0, 25) : '***';
             if (txid.length === 0) txid = '***';
 
-            const merchantAccountInfo = [
-                formatarEMV('00', 'br.gov.bcb.pix'),
-                formatarEMV('01', key)
-            ].join('');
-
-            let brCode = [
-                formatarEMV('00', '01'),
-                formatarEMV('26', merchantAccountInfo),
-                formatarEMV('52', '0000'),
-                formatarEMV('53', '986')
-            ];
-
+            // Validação do valor (se preenchido)
             if (amount) {
                 const amountComPonto = amount.replace(",", ".");
                 const valorNumerico = parseFloat(amountComPonto);
 
                 if (isNaN(valorNumerico) || valorNumerico <= 0) {
-                     showModal("O valor do PIX parece inválido. Use números como 10,50.");
-                     return;
+                    showModal("O valor do PIX parece inválido. Use números como 10,50 ou 10.50.");
+                    return;
                 }
-                const valorFormatado = valorNumerico.toFixed(2);
-                brCode.push(formatarEMV('54', valorFormatado));
+
+                if (valorNumerico > 999999999.99) {
+                    showModal("O valor do PIX não pode ser maior que R$ 999.999.999,99.");
+                    return;
+                }
             }
 
-            brCode.push(formatarEMV('58', 'BR'));
-            brCode.push(formatarEMV('59', name));
-            brCode.push(formatarEMV('60', city));
+            // Montagem do Merchant Account Information
+            const merchantAccountInfo = [
+                formatarEMV('00', 'br.gov.bcb.pix'),
+                formatarEMV('01', key)
+            ].join('');
 
+            // Montagem do BR Code
+            let brCode = [
+                formatarEMV('00', '01'), // Payload Format Indicator (PIX)
+                formatarEMV('26', merchantAccountInfo), // Merchant Account Information
+                formatarEMV('52', '0000'), // Merchant Category Code (0000 = não definido)
+                formatarEMV('53', '986') // Moeda (986 = BRL)
+            ];
+
+            // Adiciona o valor (se preenchido)
+            if (amount) {
+                const valorFormatado = parseFloat(amount.replace(",", ".")).toFixed(2);
+                brCode.push(formatarEMV('54', valorFormatado)); // Transaction Amount
+            }
+
+            // Adiciona informações adicionais
+            brCode.push(formatarEMV('58', 'BR')); // País (BR)
+            brCode.push(formatarEMV('59', name)); // Nome do titular
+            brCode.push(formatarEMV('60', city)); // Cidade
+
+            // Adiciona o TXID (se não for vazio)
             const additionalData = formatarEMV('05', txid);
-            brCode.push(formatarEMV('62', additionalData));
+            brCode.push(formatarEMV('62', additionalData)); // Additional Data
 
-            brCode.push('6304');
-
+            // CRC16
+            brCode.push('6304'); // CRC16 Indicator
             let stringPIX = brCode.join('');
             const checksum = crc16(stringPIX);
             const brCodeCompleto = stringPIX + checksum;
 
+            // Gera o QR Code
             gerarQRCode(brCodeCompleto, event);
         });
     </script>
